@@ -61,7 +61,10 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
     learnRef : RefObject<HTMLAnchorElement> = React.createRef();
     selectedRef : RefObject<HTMLDivElement> = React.createRef();
     lastSelectedRef: RefObject<HTMLDivElement> = React.createRef();
+<<<<<<< HEAD
     
+=======
+>>>>>>> master
 
     state: IReportRowState = {
         expanded: false,
@@ -111,7 +114,11 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
         return null;
     }
 
+<<<<<<< HEAD
     itemSelectedClickHandler(e:any, item:IReportItem) {
+=======
+    itemSelectedClickHandler(e:any, item:IReportItem) { 
+>>>>>>> master
         // this function runs once per click
         e.preventDefault();
         // e.stopPropagation(); // JCH if present learn more clickhandler will not select row
@@ -119,9 +126,17 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
         this.props.selectItem(item, this.props.group.checkpoint);
     }
 
+<<<<<<< HEAD
     itemSelectedRef(item: IReportItem) {
         // this function runs many times per click
         var selectedIssue = this.props.selectedIssue;
+=======
+    // @ts-ignore
+    itemSelectedRef(item: IReportItem) {
+        // this function runs many times per click
+        var selectedIssue = this.props.selectedIssue;
+        
+>>>>>>> master
         if (selectedIssue && item.path.dom === selectedIssue?.path.dom && item.ruleId == selectedIssue.ruleId) {
             if (this.selectedRef.current) {
                 if (this.selectedRef.current) {
@@ -130,6 +145,10 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
                 }
                 let mythis = this;
                 setTimeout(function() {
+<<<<<<< HEAD
+=======
+                    //mythis.selectedRef.current?.scrollIntoView();
+>>>>>>> master
                     mythis.selectedRef.current?.scrollIntoView({
                         block: 'center'
                     });
@@ -140,6 +159,7 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
         return null;
     }
 
+<<<<<<< HEAD
     itemSelectedRefSolo(item: IReportItem) {
         // this function runs many times per click
         var selectedIssue = this.props.selectedIssue;
@@ -162,6 +182,8 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
     }
 
 
+=======
+>>>>>>> master
     static getDerivedStateFromProps(props: IReportRowProps, state: IReportRowState) {
         if (props.report.timestamp > state.lastTimestamp) {
             return {
@@ -260,7 +282,11 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
                         return <React.Fragment>
                         {!this.props.focusedViewFilter || (focusedView && (item.selected || item.selectedChild)) ?
                             (this.props.dataFromParent[0] || this.props.dataFromParent[1] && val === "Violation" || this.props.dataFromParent[2] && val === "Needs review" || this.props.dataFromParent[3] && val === "Recommendation") ?
+<<<<<<< HEAD
                                 (<div data-tip data-for={item.selected ? "selectedTip" : "selectedChildTip" } tabIndex={0} role="row" style={{cursor:'pointer'}} aria-rowindex={++rowindex} aria-selected={!!item.selected} className={"bx--row itemDetail"+(item.selected ? " selected": "")+(item.selectedChild ? " selectedChild": "")} ref={this.itemSelectedRef(item)} onClick={(event) => this.itemSelectedClickHandler(event, item)}  onKeyDown={this.onKeyDown.bind(this)}>
+=======
+                            (<div data-tip data-for={item.selected ? "selectedTip" : "selectedChildTip" } tabIndex={0} role="row" style={{cursor:'pointer'}} aria-rowindex={++rowindex} aria-selected={!!item.selected} className={"bx--row itemDetail"+(item.selected ? " selected": "")+(item.selectedChild ? " selectedChild": "")} ref={this.itemSelectedRef(item)} onClick={(event) => this.itemSelectedClickHandler(event, item)}  onKeyDown={this.onKeyDown.bind(this)}>
+>>>>>>> master
                                     <div role="cell" className="bx--col-sm-4" style={{paddingLeft:"44px"}}>
                                         <div className="itemMessage" style={{paddingLeft:"4px"}}>
                                             { (this.props.dataFromParent[0] || this.props.dataFromParent[1]) && val === "Violation" && 

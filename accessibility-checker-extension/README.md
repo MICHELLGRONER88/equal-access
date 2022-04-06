@@ -5,11 +5,11 @@ A web browser extensions that adds automated accessibility checking capabilities
 
 ## Getting started
 
-* [Node Version 12](https://nodejs.org/en/download/).
+* [Node Version 16](https://nodejs.org/en/download/).
 
 ### Install dependencies
 
-1. Under the root directory `equal-access` directory 
+1. Under the root `equal-access` directory 
 
     ```
     npm install

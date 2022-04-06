@@ -123,6 +123,10 @@ export default class ReportElements extends React.Component<IReportElementsProps
                             group={group}
                             getItem={this.props.getItem}
                             getSelectedItem={this.props.getSelectedItem}
+<<<<<<< HEAD
+=======
+                            selectedIssue={this.props.selectedIssue}
+>>>>>>> master
                             learnItem={this.props.learnItem}
                             selectedIssue={this.props.selectedIssue}
                             selectItem={this.props.selectItem} 

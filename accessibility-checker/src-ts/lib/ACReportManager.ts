@@ -938,6 +938,14 @@ export class ACReportManager {
 
         // Run Deep diff function to compare the actual and expected values.
         let differences = DeepDiff.diff(actual, expected);
+        if (differences) {
+            differences = differences.filter(difference => !(
+                difference.kind === "E" 
+                && difference.path.length === 4 
+                && difference.path[2] === "bounds" 
+                && Math.abs(difference.lhs-difference.rhs) <= 1));
+            if (differences.length === 0) return undefined;
+        }
 
         // Return the results of the diff, which will include the differences between the objects
         return differences;
@@ -1087,7 +1095,7 @@ export class ACReportManager {
                     "\n  Level: " + issue.level +
                     "\n  XPath: " + issue.path.dom +
                     "\n  Snippet: " + issue.snippet +
-                    "\n  Help: " + ACEngineManager.getHelpURL(issue.ruleId) +
+                    "\n  Help: " + ACEngineManager.getHelpURL(issue) +
                     "\n";
             }
         });

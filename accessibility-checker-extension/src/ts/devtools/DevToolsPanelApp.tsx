@@ -28,7 +28,7 @@ import Report, { preprocessReport, IReport, IReportItem, ICheckpoint, IRuleset }
 import PanelMessaging from '../util/panelMessaging';
 import MultiScanReport from "../xlsxReport/multiScanReport/xlsx/multiScanReport";
 import MultiScanData from "./MultiScanData";
-import ReportSummaryUtil from '../util/reportSummaryUtil';
+// import ReportSummaryUtil from '../util/reportSummaryUtil';
 import OptionMessaging from "../util/optionMessaging";
 import BrowserDetection from "../util/browserDetection";
 // import html2canvas from "html2canvas"
@@ -44,20 +44,25 @@ import HelpHeader from './HelpHeader';
 import { IArchiveDefinition } from '../background/helper/engineCache';
 
 interface IPanelProps {
-    layout: "main" | "sub"
+    layout: "main" | "sub",
 }
 
 interface IPanelState {
+    badURL: boolean,
     listenerRegistered: boolean,
     numScanning: number,
     report: IReport | null,
     filter: string | null,
     tabURL: string,
+    tabCanScan: boolean,
     prevTabURL: string | null,
     tabId: number,
     tabTitle: string,
     selectedItem?: IReportItem,
+<<<<<<< HEAD
     currentSelectedItem?: IReportItem,
+=======
+>>>>>>> master
     selectedIssue: IReportItem | null,
     rulesets: IRuleset[] | null,
     selectedCheckpoint?: ICheckpoint,
@@ -105,11 +110,13 @@ interface IPanelState {
 
 export default class DevToolsPanelApp extends React.Component<IPanelProps, IPanelState> {
     state: IPanelState = {
+        badURL: false,
         listenerRegistered: false,
         numScanning: 0,
         report: null,
         filter: null,
         tabURL: "",
+        tabCanScan: false,
         prevTabURL: "",  // to determine when change url
         tabId: -1,
         tabTitle: "",
@@ -217,6 +224,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
     }
 
     async componentDidMount() {
+<<<<<<< HEAD
         this.readOptionsData();
     }
 
@@ -245,12 +253,33 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
             if (!validArchive(archiveId)) {
                 archiveId = "latest";
             }
+=======
+        // console.log("componentDidMount");
+        await this.readOptionsData();
+    }
 
-            //use archive id if it is in storage,
-            if (result.OPTIONS && result.OPTIONS.selected_archive && validArchive(result.OPTIONS.selected_archive.id)) {
-                archiveId = result.OPTIONS.selected_archive.id;
-            }
+    async readOptionsData() {
+        await new Promise<void>((resolve, _reject) => {
+            // console.log("readOptionsData");
+            var self = this;
+            chrome.storage.local.get("OPTIONS", async function (result: any) {
+                //pick default archive id from env
+                let archiveId = process.env.defaultArchiveId + "";
+                const archives = await self.getArchives();
+                const validArchive = ((id: string) => id && archives.some((archive:any) => archive.id === id));
 
+                //if default archive id is not good, pick 'latest'
+                if (!validArchive(archiveId)) {
+                    archiveId = "latest";
+                }
+>>>>>>> master
+
+                //use archive id if it is in storage,
+                if (result.OPTIONS && result.OPTIONS.selected_archive && validArchive(result.OPTIONS.selected_archive.id)) {
+                    archiveId = result.OPTIONS.selected_archive.id;
+                }
+
+<<<<<<< HEAD
             let selectedArchive = archives.filter((archive: any) => archive.id === archiveId)[0];
 
             let policyId: string = selectedArchive.policies[0].id;
@@ -260,33 +289,41 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
             if (!validPolicy(policyId)) {
                 policyId = "IBM_Accessibility";
             }
+=======
+                let selectedArchive = archives.filter((archive:any) => archive.id === archiveId)[0];
 
-            //use policy id if it is in storage
-            if (result.OPTIONS && result.OPTIONS.selected_ruleset && validPolicy(result.OPTIONS.selected_ruleset.id)) {
-                policyId = result.OPTIONS.selected_ruleset.id;
-                policyName = result.OPTIONS.selected_ruleset.name;
-            }
+                let policyId: string = selectedArchive.policies[0].id;
+                let policyName: string = selectedArchive.policies[0].name;
+                const validPolicy = ((id: string) => id && selectedArchive.policies.some((policy:any) => policy.id === id));
+>>>>>>> master
 
-            // to fix when undocked get tab id using chrome.devtools.inspectedWindow.tabId
-            // and get url using chrome.tabs.get via message "TAB_INFO"
-            let thisTabId = chrome.devtools.inspectedWindow.tabId;
-            let tab = await PanelMessaging.sendToBackground("TAB_INFO", { tabId: thisTabId });
-            if (tab.id && tab.url && tab.id && tab.title) {
-                let rulesets = await PanelMessaging.sendToBackground("DAP_Rulesets", { tabId: tab.id })
-
-                if (rulesets.error) {
-                    self.setError(rulesets);
-                    return;
+                if (!validPolicy(policyId)){ 
+                    policyId = "IBM_Accessibility";
                 }
 
-                if (!self.state.listenerRegistered) {
-                    PanelMessaging.addListener("TAB_UPDATED", async message => {
-                        self.setState({ tabTitle: message.tabTitle }); // added so titles updated
-                        if (message.tabId === self.state.tabId && message.status === "loading") {
-                            if (message.tabUrl && message.tabUrl != self.state.tabURL) {
-                                self.setState({ report: null, tabURL: message.tabUrl });
-                            }
+                //use policy id if it is in storage
+                if (result.OPTIONS && result.OPTIONS.selected_ruleset && validPolicy(result.OPTIONS.selected_ruleset.id)) {
+                    policyId = result.OPTIONS.selected_ruleset.id;
+                    policyName = result.OPTIONS.selected_ruleset.name;
+                }
+
+                // to fix when undocked get tab id using chrome.devtools.inspectedWindow.tabId
+                // and get url using chrome.tabs.get via message "TAB_INFO"
+                let thisTabId = chrome.devtools.inspectedWindow.tabId;
+                let tab = await PanelMessaging.sendToBackground("TAB_INFO", { tabId: thisTabId });
+                // console.log("tab.id = ", tab.id);
+                // console.log("tab.url = ", tab.url);
+                // console.log("tab.title = ", tab.title);
+                // console.log("tab.canScan = ",tab.canScan);
+                if (tab.id && tab.url && tab.id && tab.title) {
+
+                    if (!tab.canScan) {
+                        // console.log("Found BAD url: ",tab.url);
+                        // console.log("badURL = ",self.state.badURL);
+                        if (self.state.badURL === false) {
+                            self.setState({ badURL: true });
                         }
+<<<<<<< HEAD
                     });
 
                     PanelMessaging.addListener("DAP_SCAN_COMPLETE", self.onReport.bind(self));
@@ -298,12 +335,48 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                 }
                 if (self.props.layout === "sub") {
                     self.selectElementInElements();
+=======
+                        self.setState({ tabURL: tab.url, tabId: tab.id, tabTitle: tab.title, tabCanScan: tab.canScan });
+                        return;
+                    } else {
+                        // console.log("Found GOOD url: ",tab.url);
+                        // console.log("badURL = ",self.state.badURL);
+                        if (self.state.badURL === true) {
+                            self.setState({ badURL: false });
+                        }
+                    }
+                    let rulesets = await PanelMessaging.sendToBackground("DAP_Rulesets", { tabId: tab.id })
+
+                    if (rulesets.error) {
+                        self.setError(rulesets);
+                        return;
+                    }
+
+                    if (!self.state.listenerRegistered) {
+                        PanelMessaging.addListener("TAB_UPDATED", async message => {
+                            self.setState({ tabTitle: message.tabTitle }); // added so titles updated
+                            if (message.tabId === self.state.tabId && message.status === "loading") {
+                                if (message.tabUrl && message.tabUrl != self.state.tabURL) {
+                                    self.setState({ report: null, tabURL: message.tabUrl });
+                                }
+                            }
+                        });
+
+                        PanelMessaging.addListener("DAP_SCAN_COMPLETE", self.onReport.bind(self));
+
+                        PanelMessaging.sendToBackground("DAP_CACHED", { tabId: tab.id, tabURL: tab.url, origin: self.props.layout })
+                    }
+                    if (self.props.layout === "sub") {
+                        self.selectElementInElements();
+                    }
+                    self.setState({ rulesets: rulesets, listenerRegistered: true, tabURL: tab.url, 
+                        tabId: tab.id, tabTitle: tab.title, tabCanScan: tab.canScan, error: null, archives, selectedArchive: archiveId, 
+                        selectedPolicy: policyName });
+>>>>>>> master
                 }
-                self.setState({ rulesets: rulesets, listenerRegistered: true, tabURL: tab.url, 
-                    tabId: tab.id, tabTitle: tab.title, error: null, archives, selectedArchive: archiveId, 
-                    selectedPolicy: policyName });
-            }
-        });
+                resolve();
+            });
+        })
     }
 
     setError = (data: any) => {
@@ -336,14 +409,58 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
 
     async startScan() {
         // console.log("startScan");
-        let tabId = this.state.tabId;
         let tabURL = this.state.tabURL;
+<<<<<<< HEAD
         if (tabURL !== this.state.prevTabURL) {
             this.setState({ firstScan: true });
+=======
+        let tabId = this.state.tabId;
+        // console.log("tabURL = ",tabURL);
+        // console.log("tabId = ",tabId);
+
+        await this.readOptionsData();
+
+        let thisTabId = chrome.devtools.inspectedWindow.tabId;
+        let tab = await PanelMessaging.sendToBackground("TAB_INFO", { tabId: thisTabId });
+
+        console.log("this.state.tabCanScan = ",this.state.tabCanScan);
+
+        if (!tab.canScan) {
+            // console.log("Found BAD url: ",tab.url);
+            // console.log("badURL = ",this.state.badURL);
+            if (this.state.badURL === false) {
+                this.setState({ badURL: true });
+            } 
+            this.setState({ tabURL: tab.url, tabId: tab.id, tabTitle: tab.title, tabCanScan: tab.canScan });
+            return;
+        } else {
+            // console.log("Found GOOD url: ",tab.url);
+            // console.log("badURL = ",this.state.badURL);
+            if (this.state.badURL === true) {
+                this.setState({ badURL: false });
+            } 
+>>>>>>> master
         }
+        
+        // if (!this.state.tabCanScan) {
+        //     if (this.state.badURL === false) {
+        //         this.setState({ badURL: true });
+        //     }
+        //     return;
+        // } else {
+        //     if (this.state.badURL === true) {
+        //         this.setState({ badURL: false });
+        //     } 
+        // }
+       
+        // if (tabURL !== this.state.prevTabURL) {
+        //     this.setState({firstScan: true});
+        // }
+
+
         this.state.prevTabURL = tabURL;
 
-        this.readOptionsData();
+       
 
         if (tabId === -1) {
             // componentDidMount is not done initializing yet
@@ -539,13 +656,20 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
         }
 
         var report: any = this.state.report;
-        var summaryNumbers = ReportSummaryUtil.calcSummary(report);
-        var element_no_failures = parseInt((((summaryNumbers[4] - summaryNumbers[3]) / summaryNumbers[4]) * 100).toFixed(0));
-        var element_no_violations = parseInt((((summaryNumbers[4] - summaryNumbers[0]) / summaryNumbers[4]) * 100).toFixed(0));
 
-        var violation = report?.counts.total.Violation;
+        var violation = report?.counts.total["Violation"];
         var needsReview = report?.counts.total["Needs review"];
-        var recommendation = report?.counts.total.Recommendation;
+        var recommendation = report?.counts.total["Recommendation"];
+        var all = report?.counts.total["All"];
+
+        // var summaryNumbers = ReportSummaryUtil.calcSummary(report);
+        var element_no_failures = parseInt((((all - recommendation) / all) * 100).toFixed(0));
+        var element_no_violations = parseInt((((all - violation) / all) * 100).toFixed(0));
+
+        var violation = report?.counts.total["Violation"];
+        var needsReview = report?.counts.total["Needs review"];
+        var recommendation = report?.counts.total["Recommendation"];
+        var all = report?.counts.total["All"];
 
         // Keep track of number of stored scans (be sure to adjust when clear scans)
         this.setState(prevState => {
@@ -730,7 +854,8 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                         path: result.path,
                         value: result.value,
                         message: result.message,
-                        snippet: result.snippet
+                        snippet: result.snippet,
+                        help: result.help
                     });
                 }
 
@@ -889,8 +1014,13 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
         let mythis = this;
 
         // Provide text name for focused view element for switch
+<<<<<<< HEAD
         chrome.devtools.inspectedWindow.eval("$0.tagName",
             (result: string, isException) => {
+=======
+        chrome.devtools.inspectedWindow.eval("$0.tagName", 
+            (result:string, isException) => {
+>>>>>>> master
                 if (isException) {
                     console.error(isException);
                 }
@@ -928,7 +1058,11 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
     }
 
     getSelectedItem(item: IReportItem) {
+<<<<<<< HEAD
         console.log("Function: getSelectedItem item = ", item);
+=======
+        // console.log("Function: getSelectedItem item = ", item);
+>>>>>>> master
         this.setState({ selectedIssue: item });
     }
 
@@ -989,15 +1123,22 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
 
 
     render() {
+        console.log("DevToolsPanelApp: render");
         let error = this.state.error;
 
         if (error) {
             return this.errorHandler(error);
         }
+
         else if (this.props.layout === "main") {
             return <React.Fragment>
+<<<<<<< HEAD
                 <div style={{ display: "flex", height: "100%", maxWidth: "50%" }} className="mainPanel" role="aside" aria-label={!this.state.report ? "About IBM Accessibility Checker" : this.state.report && !this.state.selectedItem ? "Scan summary" : "Issue help"}>
                     <div ref={this.leftPanelRef} style={{ flex: "1 1 50%", height: "100%", position: "fixed", left: "50%", maxWidth: "50%", backgroundColor: "#f4f4f4", overflowY: this.state.report && this.state.selectedItem ? "scroll" : undefined }}>
+=======
+                <div style={{ display: "flex", height: "100%", maxWidth: "50%" }} className="mainPanel" role="aside" aria-label={!this.state.report?"About IBM Accessibility Checker":this.state.report && !this.state.selectedItem ? "Scan summary" : "Issue help"}>
+                    <div ref={this.leftPanelRef} style={{ flex: "1 1 50%", width: "100%", height:"100%", position:"fixed", left:"50%", maxWidth:"50%", backgroundColor: "#f4f4f4", overflowY: this.state.report && this.state.selectedItem ? "scroll" : undefined }}>
+>>>>>>> master
                         {!this.state.report && <ReportSplash />}
                         {this.state.report && !this.state.selectedItem && <ReportSummary tabURL={this.state.tabURL} report={this.state.report} />}
                         {this.state.report && this.state.selectedItem && <Help report={this.state.report!} item={this.state.selectedItem} checkpoint={this.state.selectedCheckpoint} />}
@@ -1005,6 +1146,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                     {this.leftPanelRef.current?.scrollTo(0, 0)}
                     <div style={{ flex: "1 1 50%" }} className="mainPanelRight" role="main" aria-label="IBM Accessibility Assessment">
                         <Header
+                            badURL={this.state.badURL}
                             layout={this.props.layout}
                             counts={this.state.report && this.state.report.counts}
                             scanStorage={this.state.scanStorage}
@@ -1079,11 +1221,15 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                 </div>
                 <div style={{ display: this.state.learnMore && !this.state.reportManager && !this.state.tabStopsPanel ? "" : "none", height: "100%" }}>
                     <HelpHeader learnHelp={this.learnHelp.bind(this)} layout={this.props.layout}></HelpHeader>
+<<<<<<< HEAD
                     <div style={{ overflow: "auto", height: "100%" ,boxSizing: "border-box", top: "0", position:"absolute"  }} ref={this.subPanelRef}>
+=======
+                    <div style={{ overflow: "auto", height: "100%", width: "100%", boxSizing: "border-box", top: "0", position:"absolute"  }} ref={this.subPanelRef}>
+>>>>>>> master
                         <div style={{ marginTop: "72px", height: "calc(100% - 72px)" }}>
-                            <div>
-                                <div className="subPanel">
-                                    {this.state.report && this.state.learnItem && <Help report={this.state.report!} item={this.state.learnItem} checkpoint={this.state.selectedCheckpoint} />}
+                            <div style={{ height: "100%" }}>
+                                <div className="subPanel" style={{ height: "100%"  }}>
+                                    {this.state.learnMore && this.state.report && this.state.learnItem && <Help report={this.state.report!} item={this.state.learnItem} checkpoint={this.state.selectedCheckpoint} />}
                                 </div>
                             </div>
                        </div>
@@ -1100,10 +1246,15 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
+=======
+                    {/* Note the -72px is there to make sure that the help content starts under the header */}
+>>>>>>> master
                     {this.subPanelRef.current?.scrollTo(0, -72)}
                 </div>
                 <div style={{ display: !this.state.learnMore && !this.state.reportManager && !this.state.tabStopsPanel ? "" : "none", height: "100%" }}>
                     <Header
+                        badURL={this.state.badURL}
                         layout={this.props.layout}
                         counts={this.state.report && this.state.report.counts}
                         scanStorage={this.state.scanStorage}
@@ -1133,6 +1284,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                         tabStopsResults={this.state.tabStopsResults}
                         tabStopsErrors={this.state.tabStopsErrors}
                     />
+<<<<<<< HEAD
                     <div style={{ paddingLeft:"1rem", overflow: "auto", height: "100%" ,boxSizing: "border-box", top: "10em", position:"absolute"  }}>
                         <div>
                             <div role="region" aria-label="issue list" className="issueList">
@@ -1152,6 +1304,25 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                                     focusedViewFilter={this.state.focusedViewFilter}
                                 />}
                             </div>
+=======
+                     <div style={{ marginTop: "8rem", height: "calc(100% - 8rem)" }}>
+                        <div role="region" aria-label="issue list" className="issueList">
+                            {this.state.numScanning > 0 ? <Loading /> : <></>}
+                            {this.state.report && <Report
+                                selectItem={this.selectItem.bind(this)}
+                                rulesets={this.state.rulesets}
+                                report={this.state.report}
+                                getItem={this.getItem.bind(this)}
+                                getSelectedItem={this.getSelectedItem.bind(this)}
+                                learnItem={this.state.learnItem}
+                                selectedIssue={this.state.selectedIssue}
+                                layout={this.props.layout}
+                                selectedTab="element"
+                                tabs={[ "element", "checklist", "rule"]}
+                                dataFromParent={this.state.showIssueTypeFilter}
+                                focusedViewFilter={this.state.focusedViewFilter}
+                            />}
+>>>>>>> master
                         </div>
                     </div>
                 </div>

@@ -7,7 +7,7 @@
         "install:engine": "cd accessibility-checker-engine && npm install",
         "install:accessibility-checker": "cd accessibility-checker && npm install",
         "install:karma-accessibility-checker": "cd karma-accessibility-checker && npm install",
-        "install:rule-server": "cd rule-server && cd src-gatsby && npm install && cd .. && npm install",
+        "install:rule-server": "cd rule-server && npm install",
         "install:extension": "cd accessibility-checker-extension && npm install",
         "install:report": "cd report-react && npm install",
         "install:cypress-accessibility-checker": "cd cypress-accessibility-checker && npm install",
@@ -30,6 +30,7 @@
         "url": "git@github.com/IBMa/equal-access"
     },
     "devDependencies": {
-        "npm-run-all": "^4.1.5"
+        "npm-run-all": "^4.1.5",
+        "shx": "^0.3.3"
     }
 }

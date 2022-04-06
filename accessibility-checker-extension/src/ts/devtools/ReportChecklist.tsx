@@ -95,7 +95,6 @@ export default class ReportChecklist extends React.Component<IReportChecklistPro
                     if (item.selected || item.selectedChild) {
                         group.fvCounts[val] = (group.fvCounts[val] || 0) + 1;
                     }
-                    
                 }
             }
         }
@@ -119,7 +118,7 @@ export default class ReportChecklist extends React.Component<IReportChecklistPro
         groups = groups.filter(group => group.items.length > 0);
         let scrollFirst = true;
 
-        return <div className="bx--grid report" role="table" style={{paddingLeft:"1rem", paddingRight:"0"}} aria-label="Issues grouped by checkpoint">
+        return <div className="bx--grid report" role="table" style={{paddingLeft:"1rem", paddingRight:"0", marginLeft:"16px"}} aria-label="Issues grouped by checkpoint">
             <div role="rowgroup">
                 <div className="bx--row reportHeader" role="row">
                     <div className="bx--col-md-2 bx--col-sm-2" role="columnheader">
@@ -148,6 +147,10 @@ export default class ReportChecklist extends React.Component<IReportChecklistPro
                             getItem={this.props.getItem}
                             getSelectedItem={this.props.getSelectedItem}
                             learnItem={this.props.learnItem}
+<<<<<<< HEAD
+=======
+                            selectItem={this.props.selectItem}
+>>>>>>> master
                             selectedIssue={this.props.selectedIssue}
                             layout={this.props.layout} 
                             dataFromParent={this.props.dataFromParent} 

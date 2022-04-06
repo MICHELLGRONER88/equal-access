@@ -1,9 +1,5 @@
 {
     "nls": {
-        "HAAC_Application_Role_Text": {
-            "0": "Non-decorative static text and image content within an element with \"application\" role must be accessible",
-            "Pass_0": "Rule Passed"
-        },
         "HAAC_BackgroundImg_HasTextOrTitle": {
             "0": "Background images that convey important information must have a text alternative that describes the image",
             "Pass_0": "Rule Passed"
@@ -65,6 +61,10 @@
             "0": "Interactive WAI_ARIA UI components must provide keyboard access",
             "Pass_0": "Rule Passed"
         },
+        "Rpt_Aria_MultipleDocumentRoles": {
+            "0": "All elements with a \"document\" role must have unique labels",
+            "Pass_0": "Rule Passed"
+        },
         "Rpt_Aria_OrphanedContent_Native_Host_Sematics": {
             "0": "All content must reside within an element with a landmark role",
             "Pass_0": "Rule Passed"
@@ -114,7 +114,7 @@
             "Pass_0": "Rule Passed"
         }
     },
-    "numExecuted": 121,
+    "numExecuted": 120,
     "results": [
         {
             "apiArgs": [],
@@ -157,7 +157,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -183,7 +183,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[2]"
             },
             "reasonId": "Pass_0",
@@ -209,7 +209,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[1]"
             },
             "reasonId": "Pass_0",
@@ -235,7 +235,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]"
             },
             "reasonId": "Pass_0",
@@ -469,7 +469,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -495,7 +495,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -521,7 +521,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[2]"
             },
             "reasonId": "Pass_0",
@@ -547,7 +547,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[1]"
             },
             "reasonId": "Pass_0",
@@ -573,7 +573,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]"
             },
             "reasonId": "Pass_0",
@@ -807,7 +807,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -835,7 +835,7 @@
                 "en"
             ],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -861,7 +861,7 @@
             "message": "Lang has a valid primary lang and conforms to BCP 47",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -887,7 +887,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -993,7 +993,7 @@
                 "Helo World"
             ],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -1227,7 +1227,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -1253,7 +1253,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[2]"
             },
             "reasonId": "Pass_0",
@@ -1279,7 +1279,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[1]"
             },
             "reasonId": "Pass_0",
@@ -1305,7 +1305,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]"
             },
             "reasonId": "Pass_0",
@@ -1539,7 +1539,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -1565,7 +1565,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -1669,7 +1669,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -1695,7 +1695,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[2]"
             },
             "reasonId": "Pass_0",
@@ -1721,7 +1721,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[1]"
             },
             "reasonId": "Pass_0",
@@ -1747,7 +1747,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]"
             },
             "reasonId": "Pass_0",
@@ -1981,7 +1981,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -2215,7 +2215,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -2241,7 +2241,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[2]"
             },
             "reasonId": "Pass_0",
@@ -2267,7 +2267,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[1]"
             },
             "reasonId": "Pass_0",
@@ -2293,7 +2293,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]"
             },
             "reasonId": "Pass_0",
@@ -2430,6 +2430,32 @@
             "ruleId": "Rpt_Aria_OrphanedContent_Native_Host_Sematics",
             "ruleTime": 0,
             "snippet": "<a alt=\"skip to main content\" href=\"#navskip\">",
+            "value": [
+                "VIOLATION",
+                "PASS"
+            ],
+            "ignored": false,
+            "level": "pass"
+        },
+        {
+            "apiArgs": [],
+            "bounds": {
+                "height": 213,
+                "left": 0,
+                "top": 0,
+                "width": 27332
+            },
+            "category": "Accessibility",
+            "message": "Rule Passed",
+            "messageArgs": [],
+            "path": {
+                "aria": "/document[1]",
+                "dom": "/html[1]"
+            },
+            "reasonId": "Pass_0",
+            "ruleId": "Rpt_Aria_MultipleDocumentRoles",
+            "ruleTime": 1,
+            "snippet": "<html lang=\"en\">",
             "value": [
                 "VIOLATION",
                 "PASS"
@@ -2769,7 +2795,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -2863,7 +2889,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/title[1]"
             },
             "reasonId": "Pass_0",
@@ -2889,7 +2915,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[2]"
             },
             "reasonId": "Pass_0",
@@ -2915,7 +2941,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]/meta[1]"
             },
             "reasonId": "Pass_0",
@@ -2941,7 +2967,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]/head[1]"
             },
             "reasonId": "Pass_0",
@@ -3175,7 +3201,7 @@
             "message": "Rule Passed",
             "messageArgs": [],
             "path": {
-                "aria": "",
+                "aria": "/document[1]",
                 "dom": "/html[1]"
             },
             "reasonId": "Pass_0",
@@ -3184,58 +3210,6 @@
             "snippet": "<html lang=\"en\">",
             "value": [
                 "RECOMMENDATION",
-                "PASS"
-            ],
-            "ignored": false,
-            "level": "pass"
-        },
-        {
-            "apiArgs": [],
-            "bounds": {
-                "height": 74,
-                "left": 16,
-                "top": 95,
-                "width": 2700
-            },
-            "category": "Accessibility",
-            "message": "Rule Passed",
-            "messageArgs": [],
-            "path": {
-                "aria": "/document[1]/main[1]",
-                "dom": "/html[1]/body[1]/div[2]"
-            },
-            "reasonId": "Pass_0",
-            "ruleId": "HAAC_Application_Role_Text",
-            "ruleTime": 0,
-            "snippet": "<div role=\"main\">",
-            "value": [
-                "VIOLATION",
-                "PASS"
-            ],
-            "ignored": false,
-            "level": "pass"
-        },
-        {
-            "apiArgs": [],
-            "bounds": {
-                "height": 36,
-                "left": 16,
-                "top": 16,
-                "width": 2700
-            },
-            "category": "Accessibility",
-            "message": "Rule Passed",
-            "messageArgs": [],
-            "path": {
-                "aria": "/document[1]/navigation[1]",
-                "dom": "/html[1]/body[1]/div[1]"
-            },
-            "reasonId": "Pass_0",
-            "ruleId": "HAAC_Application_Role_Text",
-            "ruleTime": 0,
-            "snippet": "<div role=\"navigation\">",
-            "value": [
-                "VIOLATION",
                 "PASS"
             ],
             "ignored": false,
@@ -3307,7 +3281,7 @@
             "recommendation": 0,
             "potentialrecommendation": 0,
             "manual": 0,
-            "pass": 120,
+            "pass": 119,
             "ignored": 0
         },
         "scanTime": 33,

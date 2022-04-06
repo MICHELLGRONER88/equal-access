@@ -18,7 +18,6 @@ import React from "react";
 
 import { IReport } from './Report';
 import { Tile } from 'carbon-components-react';
-import ReportSummaryUtil from '../util/reportSummaryUtil';
 import Violation16 from "../../assets/Violation16.svg";
 import NeedsReview16 from "../../assets/NeedsReview16.svg";
 import Recommendation16 from "../../assets/Recommendation16.svg";
@@ -27,13 +26,77 @@ interface IReportSummaryState {
 }
 
 interface IReportSummaryProps {
-    report: IReport
-    tabURL: string
+    report: IReport,
+    tabURL: string,
+    counts?: {
+        "total": { [key: string]: number },
+        "filtered": { [key: string]: number }
+    } | null,
+}
+
+function calcSummary(report: IReport) {
+
+    let summaryResults:any = [];
+    let results = report.results.filter((result: any) => {
+        return result.value[1] !== "PASS";
+    })
+    // console.log("report.results.length = "+report.results.length);
+    // console.log("all issues = "+results.length);
+
+    let violations = results.filter((result: any) => {
+        return result.value[0] === "VIOLATION" && result.value[1] === "FAIL";
+    })
+    summaryResults.push(violations.length);
+    // console.log("Violations = "+summaryResults[0]);
+
+    let potentials = results.filter((result: any) => {
+        return result.value[0] === "VIOLATION" && result.value[1] === "POTENTIAL";
+    })
+    summaryResults.push(potentials.length);
+    // console.log("summaryPotential = "+summaryResults[1]);
+
+    let recommendations = results.filter((result: any) => {
+        return result.value[0] === "RECOMMENDATION";
+    })
+    summaryResults.push(recommendations.length);
+    // console.log("summaryRecommendation = "+summaryResults[2]);
+
+    let failXpaths: string[] = [];
+    results.map((result:any) => {
+        failXpaths.push(result.path.dom);
+    })
+    let failUniqueElements = Array.from(new Set(failXpaths));
+    summaryResults.push(failUniqueElements.length);
+    // console.log("elementsWithIssues = "+summaryResults[3]);
+
+    let passXpaths: any = [];
+    let passResults = report.results.filter((result: any) => {
+        return result.value[1] === "PASS";
+    })
+    
+    passResults.map((result:any) => {
+        passXpaths.push(result.path.dom);
+    })
+    
+    let passUniqueElements = Array.from(new Set(passXpaths));
+    summaryResults[4] = passUniqueElements.length;
+    // console.log("totalElements = "+summaryResults[4]);
+    // Note summaryNumbers [Violations,Needs review, Recommendations, elementsWithIssues, totalElements]
+    return summaryResults;
 }
 
 export default class ReportSummary extends React.Component<IReportSummaryProps, IReportSummaryState> {
     render() {
-        let summaryNumbers = ReportSummaryUtil.calcSummary(this.props.report);
+
+        let counts = this.props.counts;
+        counts= this.props.report && this.props.report.counts;
+
+        // let isLatestArchive = this.isLatestArchive(this.props.selectedArchive, this.props.archives);
+
+        counts.total["Violation"] = counts.total["Violation"] || 0;
+        counts.total["Needs review"] = counts.total["Needs review"] || 0;
+        counts.total["Recommendation"] = counts.total["Recommendation"] || 0;
+        counts.total["All"] = counts.total["Violation"] + counts.total["Needs review"] + counts.total["Recommendation"];
 
         let d = new Date();
         let options = {
@@ -47,16 +110,18 @@ export default class ReportSummary extends React.Component<IReportSummaryProps, 
         let time = d.toLocaleString('en-us', options);
 
         // Note summaryNumbers [Violations,Needs review, Recommendations, elementsWithIssues, totalElements]
-
-        let elementNoFailures: string = "";
-        /** Calculate the score */
-        elementNoFailures = (((summaryNumbers[4] - summaryNumbers[3]) / summaryNumbers[4]) * 100).toFixed(0);
+        let summaryNumbers:any = [];
+        summaryNumbers = calcSummary(this.props.report);
+        
+        // Calculate score
+        let currentStatus = (100 - ((summaryNumbers[3]/summaryNumbers[4])*100)).toFixed(0);
 
         return <aside className="reportSummary" aria-labelledby="summaryTitle">
             <div className="bx--grid" style={{ margin: "2rem -1rem 0rem 0rem" }}>
                 <div className="bx--row">
                     <div className="bx--col-lg-8 bx--col-md-8 box--col-sm-4">
                         <h2 id="summaryTitle" className="summaryTitle">Scan summary</h2>
+                        
                         <div className="summaryTitleDetail">{time}</div>
                         <div className="summaryTitleDetail"><span style={{ fontWeight: 600 }}>Scanned page:</span> {this.props.tabURL}</div>
                     </div>
@@ -65,12 +130,14 @@ export default class ReportSummary extends React.Component<IReportSummaryProps, 
                 </div>
                 <div className="bx--row">
                     <div className="bx--col-lg-8 bx--col-md-8 box--col-sm-4">
-                        <Tile className="tile score-tile">
+                        <Tile className="tile status-score-tile">
                             <div>
                                 <h3 className="tile-title" >Current Status</h3>
                             </div>
-                            <div className="tile-score">{elementNoFailures}%</div>
-                            <div className="tile-description">Percentage of elements with no detected violations or items to review</div>
+                            <div className="tile-score">{currentStatus}%</div>
+                            <div className="tile-description" style={{ marginBottom: "16px" }}>Percentage of elements with no detected violations or items to review</div>
+                            <div className="tile-description">Web page Total HTML Elements: {summaryNumbers[4]}</div>
+                            <div className="tile-description">Elements with Violations or Needs review: {summaryNumbers[3]} </div>
                         </Tile>
                     </div>
                     <div className="bx--col-lg-8 bx--col-md-8 box--col-sm-4">
@@ -79,7 +146,7 @@ export default class ReportSummary extends React.Component<IReportSummaryProps, 
                                 <h3 className="tile-title" style={{ display: "inline" }}>Violations</h3>
                                 <span><img src={Violation16} style={{ verticalAlign: "top", float: "right" }} alt="Violation" /></span>
                             </div>
-                            <div className="tile-score">{summaryNumbers[0]}</div>
+                            <div className="tile-score">{counts.total["Violation"]}</div>
                             <div className="tile-description">Accessibility failures that need to be corrected</div>
                         </Tile>
                     </div>
@@ -91,7 +158,7 @@ export default class ReportSummary extends React.Component<IReportSummaryProps, 
                                 <h3 className="tile-title" style={{ display: "inline" }}>Needs review</h3>
                                 <span><img src={NeedsReview16} style={{ verticalAlign: "top", float: "right" }} alt="Needs review" /></span>
                             </div>
-                            <div className="tile-score">{summaryNumbers[1]}</div>
+                            <div className="tile-score">{counts.total["Needs review"]}</div>
                             <div className="tile-description2">Issues that may not be a violation; manual review is needed</div>
                         </Tile>
                     </div>
@@ -101,7 +168,7 @@ export default class ReportSummary extends React.Component<IReportSummaryProps, 
                                 <h3 className="tile-title" style={{ display: "inline" }}>Recommendations</h3>
                                 <span><img src={Recommendation16} style={{ verticalAlign: "top", float: "right" }} alt="Recommendation" /></span>
                             </div>
-                            <div className="tile-score">{summaryNumbers[2]}</div>
+                            <div className="tile-score">{counts.total["Recommendation"]}</div>
                             <div className="tile-description2">Opportunities to apply best practices to further improve accessibility</div>
                         </Tile>
                     </div>

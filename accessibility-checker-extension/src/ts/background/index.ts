@@ -108,11 +108,11 @@ BackgroundMessaging.addListener("DAP_SCAN", async (message: any) => {
                 policyId = result.OPTIONS.selected_ruleset.id;
             }
 
-            await initTab(message.tabId, archiveId);
             await BackgroundMessaging.sendToTab(message.tabId, "DAP_SCAN_TAB", {
                 tabId: message.tabId,
                 tabURL: message.tabURL,
                 archiveId: archiveId,
+                archiveVersion: selectedArchive.version,
                 policyId: policyId,
                 origin: message.origin
             });
@@ -142,6 +142,17 @@ BackgroundMessaging.addListener("TAB_INFO", async (message: any) => {
     return await new Promise((resolve, _reject) => {
         chrome.tabs.get(message.tabId, async function (tab: any) {
             //chrome.tabs.get({ 'active': true, 'lastFocusedWindow': true }, async function (tabs) {
+            let canScan = await new Promise((resolve, _reject) => {
+                if (tab.id < 0) return resolve(false);
+                chrome.tabs.executeScript(tab.id, {
+                    code: "typeof window.ace",
+                    frameId: 0,
+                    matchAboutBlank: true
+                }, function (res) {
+                    resolve(!!res);
+                })
+            });
+            tab.canScan = canScan;
             resolve(tab);
         });
     });
@@ -163,11 +174,10 @@ BackgroundMessaging.addListener("DAP_Rulesets", async (message: any) => {
         chrome.storage.local.get("OPTIONS", async function (result: any) {
             let archiveId = Config.defaultArchiveId + "";
 
+            await initTab(message.tabId, archiveId);
             if (result.OPTIONS) {
                 archiveId = result.OPTIONS.selected_archive.id;
             } try {
-                await initTab(message.tabId, archiveId);
-
                 chrome.tabs.executeScript(message.tabId, {
                     code: "new window.ace.Checker().rulesets;",
                     frameId: 0,

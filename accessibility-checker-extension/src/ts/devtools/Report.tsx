@@ -60,7 +60,8 @@ export interface IReportItem {
     selected: boolean,
     selectedChild: boolean,
     scrollTo: boolean,
-    snippet: string
+    snippet: string,
+    help?: string
 }
 
 export interface ICheckpoint {
@@ -201,7 +202,11 @@ export default class Report extends React.Component<IReportProps, IReportState> 
         }
 
         return <React.Fragment>
+<<<<<<< HEAD
             <div className="bx--grid" >
+=======
+             <div className="bx--grid" >
+>>>>>>> master
                 <div className="bx--row" >
                     <div className="bx--col-sm-4" >
                         <Tabs
@@ -226,6 +231,7 @@ export default class Report extends React.Component<IReportProps, IReportState> 
                                                 }}
                             >
                                 <div>
+<<<<<<< HEAD
                                     {tabId === 'element' && <div style={{marginLeft: "-2rem"}}>
                                         <ReportElements layout={this.props.layout} getItem={this.props.getItem} getSelectedItem={this.props.getSelectedItem} learnItem={this.props.learnItem} selectItem={this.props.selectItem} selectedIssue={this.props.selectedIssue} report={this.props.report} dataFromParent={this.props.dataFromParent} focusedViewFilter={this.props.focusedViewFilter}/>
                                     </div>}
@@ -234,6 +240,16 @@ export default class Report extends React.Component<IReportProps, IReportState> 
                                     </div>}
                                     {tabId === 'checklist' && ruleset && extRuleset && <div style={{marginLeft: "-2rem"}}> 
                                         <ReportChecklist layout={this.props.layout} getItem={this.props.getItem} getSelectedItem={this.props.getSelectedItem} learnItem={this.props.learnItem} selectItem={this.props.selectItem} selectedIssue={this.props.selectedIssue} report={this.props.report} ruleset={ruleset} extRuleset={extRuleset} dataFromParent={this.props.dataFromParent} focusedViewFilter={this.props.focusedViewFilter}/>
+=======
+                                    {tabId === 'element' && <div className="reportContainer">
+                                        <ReportElements layout={this.props.layout} getItem={this.props.getItem} getSelectedItem={this.props.getSelectedItem} learnItem={this.props.learnItem} selectItem={this.props.selectItem} selectedIssue={this.props.selectedIssue} report={this.props.report} dataFromParent={this.props.dataFromParent} focusedViewFilter={this.props.focusedViewFilter}/>
+                                    </div>}
+                                    {tabId === 'rule' && <div className="reportContainer">
+                                        <ReportRules layout={this.props.layout} getItem={this.props.getItem} getSelectedItem={this.props.getSelectedItem} learnItem={this.props.learnItem}  selectItem={this.props.selectItem} selectedIssue={this.props.selectedIssue} report={this.props.report} dataFromParent={this.props.dataFromParent} focusedViewFilter={this.props.focusedViewFilter}/>
+                                    </div>}
+                                    {tabId === 'checklist' && ruleset && <div className="reportContainer">
+                                    <ReportChecklist layout={this.props.layout} getItem={this.props.getItem} getSelectedItem={this.props.getSelectedItem} learnItem={this.props.learnItem} selectItem={this.props.selectItem} selectedIssue={this.props.selectedIssue} report={this.props.report} ruleset={ruleset} dataFromParent={this.props.dataFromParent} focusedViewFilter={this.props.focusedViewFilter}/>
+>>>>>>> master
                                     </div>}
                                 </div>
                             </Tab>

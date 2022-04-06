@@ -253,7 +253,7 @@ function loadConfigFromYAMLorJSONFile() {
                 ACConstants.DEBUG && console.log("Loading as YAML file.");
 
                 // Load in as yml or yaml file and return this object
-                return YAML.safeLoad(fs.readFileSync(fileToCheck), 'utf8');
+                return YAML.load(fs.readFileSync(fileToCheck), 'utf8');
             }
         } else {
             ACConstants.DEBUG && console.log("Trying to load as json or js.");
@@ -359,6 +359,10 @@ export class ACConfigManager {
         if (!config) {
             await ACConfigManager.setConfig();
         }
+        return config;
+    }
+
+    static getConfigNow() : IConfigUnsupported {
         return config;
     }
 }

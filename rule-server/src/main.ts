@@ -68,7 +68,15 @@ export class Server {
                     res.redirect('https://' + req.headers.host + req.url);
                 }
             });
-
+            this.app.use(function(req, res, next) {
+                let change = req.url.replace(/\/tools\/help\/([^/]*).*$/, "/archives/preview/doc/en-US/$1.html");
+                if (change !== req.url) {
+                    res.redirect(change);
+                } else {
+                    next();
+                }
+            });
+             
             this.app.use("/rules", express.static(path.join(__dirname, "static"), { maxAge: Server.oneDay }));
 
             this.app.use("/rules/api", bodyParser.json({ type: 'application/json'}));
@@ -76,8 +84,14 @@ export class Server {
 
             const archives = require("./static/archives");
             let latest = "2020FebDeploy";
+            let latestVersion;
             for (const archive of archives) {
-                if (archive.latest) {
+                if (archive.id === "latest") {
+                    latestVersion = archive.version;
+                }
+            }
+            for (const archive of archives) {
+                if (archive.version === latestVersion) {
                     latest = archive.path;
                 }
             }

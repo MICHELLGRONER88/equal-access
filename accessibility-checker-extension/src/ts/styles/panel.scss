@@ -282,7 +282,11 @@ $feature-flags: (
         background-color: #E8DAFF;
     }
     .itemDetail.selectedItem {
+<<<<<<< HEAD
         border: solid #000000 2px;
+=======
+        border: solid #000000 2px; // outline border for selected issue
+>>>>>>> master
     }
 }
 
@@ -549,6 +553,15 @@ $feature-flags: (
             margin-top: 18px;
             height: 154px
         }
+
+        .status-score-tile {
+            box-sizing: border-box;
+            border: solid #8A3FFC 1px;
+            background-color: #E8DAFF;
+            margin-top: 18px;
+            height: 190px
+        }
+
         .count-tile {
             box-sizing: border-box;
             background-color: #FFFFFF;
@@ -610,6 +623,24 @@ $feature-flags: (
         }
         .fixed-header .bee-logo {
             right: 2rem;
+        }
+
+        .issueList {
+            .bx--row {
+                margin-left: 0px;
+                margin-right: 0px;
+                .bx--col-sm-4 {
+                    padding-left: 0px;
+                    padding-right: 0px;
+                    .tabpanel, .bx--tab-content {
+                        padding-left: 0px;
+                        padding-right: 1rem;
+                        .reportContainer {
+                            margin-left: -1rem;
+                        }            
+                    }
+                }
+            }
         }
     }
 }
@@ -823,6 +854,10 @@ main {
 
     >div {
         padding-right: 1rem;
+    }
+
+    .reportContainer {
+        margin-left:-2rem;
     }
 }
 
