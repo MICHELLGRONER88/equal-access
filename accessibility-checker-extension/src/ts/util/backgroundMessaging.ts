@@ -70,3 +70,7 @@ export default class BackgroundMessaging {
     }
 
 }
+
+BackgroundMessaging.addListener("IBMA_AC_WAKEUP", () => {
+    return Promise.resolve({ ok: true });
+})

@@ -24,7 +24,24 @@ export default class TabMessaging {
         CommonMessaging.addListener(type, listener);
     }
 
-    public static sendToBackground(type: string, message: any): Promise<any> {
+    public static async sendToBackground(type: string, message: any): Promise<any> {
+        let wakeResp: any = {
+            ok: false
+        };
+        // while (!wakeResp.ok) {
+            try {
+                wakeResp = await this._sendToBackground("IBMA_AC_WAKEUP", {});
+            } catch (err) {
+                wakeResp = err;
+            }
+            if (!wakeResp.ok) {
+                console.error(wakeResp);
+            }
+        // }
+        return this._sendToBackground(type, message);
+    }
+
+    private static _sendToBackground(type: string, message: any): Promise<any> {
         let myMessage = JSON.parse(JSON.stringify(message));
         myMessage.type = type;
 
