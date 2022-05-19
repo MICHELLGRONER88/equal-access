@@ -448,9 +448,11 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
                             </p>
                             <br></br>
                             <p>
-                                You are using a rule set from {OptionUtil.getRuleSetDate(this.props.selectedArchive, this.props.archives)}.
+                                Currently active rule set: {'"'+OptionUtil.getRuleSetDate(this.props.selectedArchive, this.props.archives)+'"'}
                                 <span>{<br/>}</span>
-                                The latest rule set is {OptionUtil.getRuleSetDate('latest', this.props.archives)}
+                                Most recent rule set: {'"'+OptionUtil.getRuleSetDate('latest', this.props.archives)+'"'}
+                                <br/><br/>
+                                Currently active guidelines: {'"'+this.props.selectedPolicy+'"'}
                             </p>
                             <br></br>
                             <div>
