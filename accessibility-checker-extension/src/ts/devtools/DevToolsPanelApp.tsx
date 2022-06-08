@@ -517,6 +517,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                     // there will always be at least one tab
                     tabbable?.push(result);
                 } else if (result.value[1] !== "PASS" && 
+                    // 14 Keyboard Mode Rules
                     // 2.1.1 Keyboard
                     (result.ruleId === "HAAC_Application_Role_Text" ||
                     result.ruleId === "HAAC_Audio_Video_Triggers" ||
@@ -527,6 +528,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                     // 2.4.3 Focus Order
                     result.ruleId === "IBMA_Focus_MultiTab" ||
                     result.ruleId === "IBMA_Focus_Tabbable" ||
+                    result.ruleID === "element_tabbable_role_invalid" ||
                     // 2.4.7 Focus Visible
                     result.ruleId === "RPT_Style_HinderFocus1" ||
                     result.ruleId === "WCAG20_Script_FocusBlurs" ||
