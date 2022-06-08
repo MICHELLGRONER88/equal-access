@@ -215,8 +215,8 @@ BackgroundMessaging.addListener("DAP_Rulesets", async (message: any) => {
 
         chrome.storage.local.get("OPTIONS", async function (result: any) {
             let archiveId = Config.defaultArchiveId + "";
-
-            if (result.OPTIONS && result.OPTIONS.selected_archive.id == undefined) {
+            console.log("result.OPTIONS.selected_archive = ",(typeof(result.OPTIONS.selected_archive)));
+            if (result.OPTIONS && (typeof(result.OPTIONS.selected_archive)) !== "undefined" && (typeof(result.OPTIONS.selected_archive)) !== null) {
                 archiveId = result.OPTIONS.selected_archive.id;
             } else {
                 archiveId = "latest";
