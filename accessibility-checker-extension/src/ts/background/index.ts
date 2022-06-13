@@ -215,7 +215,7 @@ BackgroundMessaging.addListener("DAP_Rulesets", async (message: any) => {
 
         chrome.storage.local.get("OPTIONS", async function (result: any) {
             let archiveId = Config.defaultArchiveId + "";
-            console.log("result.OPTIONS.selected_archive = ",(typeof(result.OPTIONS.selected_archive)));
+            // console.log("result.OPTIONS.selected_archive = ",(typeof(result.OPTIONS.selected_archive)));
             if (result.OPTIONS && (typeof(result.OPTIONS.selected_archive)) !== "undefined" && (typeof(result.OPTIONS.selected_archive)) !== null) {
                 archiveId = result.OPTIONS.selected_archive.id;
             } else {
@@ -255,7 +255,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 BackgroundMessaging.addListener("DRAW_TABS_TO_BACKGROUND", async (message: any) => {
-    // console.log("Message DRAW_TABS_TO_BACKGROUND recieved in background")
+    console.log("Message DRAW_TABS_TO_BACKGROUND recieved in background")
     await BackgroundMessaging.sendToTab(message.tabId,
         "DRAW_TABS_TO_CONTEXT_SCRIPTS", 
         { tabId: message.tabId, tabURL: message.tabURL, tabStopsResults: message.tabStopsResults, 
@@ -263,7 +263,6 @@ BackgroundMessaging.addListener("DRAW_TABS_TO_BACKGROUND", async (message: any) 
             tabStopOutlines: message.tabStopOutlines, tabStopAlerts: message.tabStopAlerts,
             tabStopFirstTime: message.tabStopFirstTime,
         });
-
     return true;
 });
 
@@ -291,13 +290,13 @@ BackgroundMessaging.addListener("TABSTOP_XPATH_ONCLICK", async (message: any) =>
     return true;
 }); 
 
-BackgroundMessaging.addListener("TABSTOP_RESIZE", async (message: any) => {
-    console.log("Message TABSTOP_RESIZE received in background, resize: "+ message.resize)
-    await BackgroundMessaging.sendToPanel("TABSTOP_RESIZE", {
-        resize: message.resize,
-    });
+// BackgroundMessaging.addListener("TABSTOP_RESIZE", async (message: any) => {
+//     console.log("Message TABSTOP_RESIZE received in background, resize: "+ message.resize)
+//     await BackgroundMessaging.sendToPanel("TABSTOP_RESIZE", {
+//         resize: message.resize,
+//     });
 
-    return true;
-}); 
+//     return true;
+// }); 
 
 

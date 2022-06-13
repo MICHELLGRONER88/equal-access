@@ -257,37 +257,37 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
     }
 
     async componentDidMount() {
-        console.log("componentDidMount");
+        // console.log("componentDidMount");
         await this.readOptionsData();
     }
 
     async readOptionsData() {
-        console.log("readOptionsData");
+        // console.log("readOptionsData");
         await new Promise<void>((resolve, _reject) => {
             var self = this;
-            chrome.storage.local.get("OPTIONS", async function (result: any) {
-                console.log(result.OPTIONS);
+            chrome.storage.local.get("OPTIONS", async  (result: any) => {
+                // console.log(result.OPTIONS);
                 // pick default archive id from env
                 let archiveId = process.env.defaultArchiveId + "";
-                console.log("archiveId 1 = ",archiveId);
+                // console.log("archiveId 1 = ",archiveId);
                 const archives = await self.getArchives();
                 const validArchive = ((id: string) => id && archives.some((archive:any) => archive.id === id));
 
                 // if default archive id is not good, pick 'latest'
                 if (!validArchive(archiveId)) {
                     archiveId = "latest";
-                    console.log("archiveId 2 = ",archiveId);
+                    // console.log("archiveId 2 = ",archiveId);
                 }
 
                 // use archive id if it is in storage,
                 if (result.OPTIONS && result.OPTIONS.selected_archive && validArchive(result.OPTIONS.selected_archive.id)) {
                     archiveId = result.OPTIONS.selected_archive.id;
-                    console.log("archiveId 3 = ",archiveId);
+                    // console.log("archiveId 3 = ",archiveId);
                 } else {
                     archiveId = "latest";
                 }
 
-                console.log("archiveId 3a = ",archiveId);
+                // console.log("archiveId 3a = ",archiveId);
                 
 
                 let selectedArchive = archives.filter((archive:any) => archive.id === archiveId)[0];
@@ -369,7 +369,20 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
 
                         PanelMessaging.addListener("TABSTOP_XPATH_ONCLICK", async message => {self.xpathFromTabstops(message)} );
 
-                        PanelMessaging.addListener("TABSTOP_RESIZE", async message => { resize: message.resize });
+                        PanelMessaging.addListener("TABSTOP_RESIZE", async message => {
+                            console.log("Message TABSTOP_RESIZE received in Panel");
+                            console.log("Start SCAN");
+                            await self.startScan();
+                            console.log("SCAN Done");
+                            console.log("Send Message to draw");
+                            await PanelMessaging.sendToBackground("DRAW_TABS_TO_BACKGROUND", 
+                                    { tabId: this.state.tabId, tabURL: this.state.tabURL, tabStopsResults: this.state.tabStopsResults, tabStopsErrors: this.state.tabStopsErrors, 
+                                        tabStopLines: this.state.tabStopLines, tabStopOutlines: this.state.tabStopOutlines });
+                            //        setTimeout(() => {
+                            //             this.setTabStopsShowHide();
+                            //         }, 1000);
+                            console.log("Got message.resize = ",message.resize);
+                        } );
 
                     }
                     if (self.props.layout === "sub") {
@@ -379,9 +392,9 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                     
 
                     // store OPTIONS
-                    console.log("Store OPTIONS");
-                    console.log("archiveId 4 = ",archiveId);
-                    console.log("policyName = ",policyId);
+                    // console.log("Store OPTIONS");
+                    // console.log("archiveId 4 = ",archiveId);
+                    // console.log("policyName = ",policyId);
                     self.setState({ rulesets: rulesets, listenerRegistered: true, tabURL: tab.url, 
                         tabId: tab.id, tabTitle: tab.title, tabCanScan: tab.canScan, error: null, archives, 
                         selectedArchive: archiveId, selectedPolicy: policyName, tabStopLines: tabStopLines, 
@@ -423,7 +436,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
     }
 
     async startScan() {
-        console.log("startScan");
+        console.log("Function: startScan START");
         let tabURL = this.state.tabURL;
         let tabId = this.state.tabId;
 
@@ -451,11 +464,12 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
         } else {
             this.setState({ numScanning: this.state.numScanning + 1, scanning: true });
             try {
-                await PanelMessaging.sendToBackground("DAP_SCAN", { tabId: tabId, tabURL:  tabURL, origin: this.props.layout})
+                await PanelMessaging.sendToBackground("DAP_SCAN", { tabId: tabId, tabURL:  tabURL, origin: this.props.layout});
             } catch (err) {
                 console.error(err);
             }
         }
+        console.log("Function: startScan DONE");
     }
 
     // JCH - not used
@@ -465,7 +479,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
     }
 
     async onReport(message: any): Promise<any> {
-        console.log("Function: onReport");
+        console.log("Function: onReport START");
         try {
             if( BrowserDetection.isChrome() && !message.tabURL.startsWith("file:")){
                 let blob_url = message.blob_url;
@@ -479,7 +493,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
             if (!report) return;
 
             let check_option = this.getCheckOption(message.archiveId, message.policyId, archives);
-            console.log("check_option = ",check_option);
+            // console.log("check_option = ",check_option);
 
             // JCH add itemIdx to report (used to be in message.report)
             report.results.map((result: any, index: any) => {
@@ -532,7 +546,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
                     // 2.4.7 Focus Visible
                     result.ruleId === "RPT_Style_HinderFocus1" ||
                     result.ruleId === "WCAG20_Script_FocusBlurs" ||
-                                      "element_tabbable_visible" ||
+                    result.ruleId === "element_tabbable_visible" ||
                     // 3.2.1 On Focus
                     result.ruleId === "WCAG20_Select_NoChangeAction" ||
                     // 4.1.2 Name, Role, Value
@@ -546,6 +560,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
 
             this.setState({ tabStopsResults: tabbable });
             this.setState({ tabStopsErrors: tabbableErrors });
+            // console.log("tabbableErrors = ", tabbableErrors);
             // JCH - clear visualization
             if (this.state.showHideTabStops === false ) {
                 // console.log("Function: onReport DELETE_DRAW_TABS_TO_CONTEXT_SCRIPTS");
@@ -649,6 +664,7 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
         } catch (err) {
             console.error(err);
         }
+        console.log("Function: onReport DONE");
         return true;
     }
 
@@ -1096,11 +1112,11 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
     }
 
     save_options_to_storage = async (state: any) => {
-        console.log("save_options_to_storage");
+        // console.log("save_options_to_storage");
         var options = { OPTIONS: state };
-        console.log(options);
+        // console.log(options);
         await chrome.storage.local.set(options, function () {
-            console.log("options is set to ", options);
+            // console.log("options is set to ", options);
         });
     };
 
@@ -1142,13 +1158,13 @@ export default class DevToolsPanelApp extends React.Component<IPanelProps, IPane
 
     
     render() {
-        console.log("render");
-        console.log("this.state.this.state.selectedArchive = ",this.state.selectedArchive);
-        console.log("this.state.this.state.selectedPolicy = ",this.state.selectedPolicy);
-        console.log("this.state.tabStopLines = ",this.state.tabStopLines);
-        console.log("this.state.tabStopOutlines = ",this.state.tabStopOutlines);
-        console.log("this.state.tabStopAlerts = ",this.state.tabStopAlerts);
-        console.log("this.state.tabStopFirstTime = ",this.state.tabStopFirstTime);
+        // console.log("render");
+        // console.log("this.state.this.state.selectedArchive = ",this.state.selectedArchive);
+        // console.log("this.state.this.state.selectedPolicy = ",this.state.selectedPolicy);
+        // console.log("this.state.tabStopLines = ",this.state.tabStopLines);
+        // console.log("this.state.tabStopOutlines = ",this.state.tabStopOutlines);
+        // console.log("this.state.tabStopAlerts = ",this.state.tabStopAlerts);
+        // console.log("this.state.tabStopFirstTime = ",this.state.tabStopFirstTime);
 
         let error = this.state.error;
 
