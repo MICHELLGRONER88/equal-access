@@ -111,6 +111,7 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
     }
 
     itemSelectedClickHandler(e:any, item:IReportItem) { 
+        console.log("Function: itemSelectedClickHandler");
         // this function runs once per click
         e.preventDefault();
         // e.stopPropagation(); // JCH if present learn more clickhandler will not select row
@@ -120,18 +121,25 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
 
     // @ts-ignore
     itemSelectedRef(item: IReportItem) {
+        console.log("Function: itemSelectedRef ------");
         // this function runs many times per click
         var selectedIssue = this.props.selectedIssue;
-        
-        if (selectedIssue && item.path.dom === selectedIssue?.path.dom && item.ruleId == selectedIssue.ruleId) {
+        console.log("selectedIssue = ", selectedIssue);
+        console.log("item.path.dom ",item.path.dom," === ", "selectedIssue?.path.dom ",selectedIssue?.path.dom);
+        console.log("item.ruleId ",item.ruleId," === ", "selectedIssue.ruleId ",selectedIssue?.ruleId);
+        console.log("this.selectedRef.current = ", this.selectedRef.current);
+        if (selectedIssue && item.path.dom === selectedIssue?.path.dom && item.ruleId === selectedIssue.ruleId) {
+            console.log("xpath and ruleId equal");
             if (this.selectedRef.current) {
+                console.log("this.selectedRef.current = ",this.selectedRef.current);
                 if (this.selectedRef.current) {
                     // TODO Get rid of doubles ?
+                    console.log("Add class selectedItem");
                     this.selectedRef.current?.classList.add("selectedItem");
                 }
                 let mythis = this;
                 setTimeout(function() {
-                    //mythis.selectedRef.current?.scrollIntoView();
+                    console.log("scroll into view");
                     mythis.selectedRef.current?.scrollIntoView({
                         block: 'center'
                     });
