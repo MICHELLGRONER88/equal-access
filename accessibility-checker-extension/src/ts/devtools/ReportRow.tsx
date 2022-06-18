@@ -131,6 +131,7 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
         if (selectedIssue && item.path.dom === selectedIssue?.path.dom && item.ruleId === selectedIssue.ruleId) {
             console.log("xpath and ruleId equal");
             if (this.selectedRef.current) {
+                console.log("this.selectedRef has value")
                 console.log("this.selectedRef.current = ",this.selectedRef.current);
                 if (this.selectedRef.current) {
                     // TODO Get rid of doubles ?
@@ -145,8 +146,10 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
                     });
                 },0)
             }
+            console.log("*** Set *** this.selectedRef = ",this.selectedRef);
             return this.selectedRef;
         } 
+        console.log("*** Set *** this.selectedRef = ",this.selectedRef);
         return null;
     }
 
@@ -181,6 +184,7 @@ export default class ReportRow extends React.Component<IReportRowProps, IReportR
     }
 
     render() {
+        console.log("@@@ ReportRow render @@@")
         const group = this.props.group;
         let vCount = group.counts["Violation"] || 0;
         let fvVCount = group.fvCounts["Violation"] || 0;
