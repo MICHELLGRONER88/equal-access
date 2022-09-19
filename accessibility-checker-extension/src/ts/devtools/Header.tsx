@@ -400,21 +400,14 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
                                 try {
                                     // console.log("onClick showHideTabStops = ", this.props.showHideTabStops);
                                     if (this.props.showHideTabStops) {
-                                        // console.log("1");
-                                        // console.log("tabID = ",this.props.tabId,"   tabURL = ",this.props.tabURL, 
-                                        //             "   tabStopsResults = ", this.props.tabStopsResults, "   tabStopsErrors = ",this.props.tabStopsErrors,"   tabStopLines = ", this.props.tabStopLines,
-                                        //             "   tabStopOutlines = ", this.props.tabStopOutlines);
                                         await PanelMessaging.sendToBackground("DRAW_TABS_TO_BACKGROUND", 
                                         { tabId: this.props.tabId, tabURL: this.props.tabURL, tabStopsResults: this.props.tabStopsResults, tabStopsErrors: this.props.tabStopsErrors, 
                                             tabStopLines: this.props.tabStopLines, tabStopOutlines: this.props.tabStopOutlines });
-                                            // console.log("2");
                                             setTimeout(() => {
-                                                // console.log("3");
                                                 this.props.setTabStopsShowHide();
                                             }, 1000);
                                             this.keyboardModalHandler();
                                     } else {
-                                        // console.log("4");
                                         await PanelMessaging.sendToBackground("DELETE_DRAW_TABS_TO_CONTEXT_SCRIPTS", { tabId: this.props.tabId, tabURL: this.props.tabURL });
                                         this.props.setTabStopsShowHide();
                                     }
