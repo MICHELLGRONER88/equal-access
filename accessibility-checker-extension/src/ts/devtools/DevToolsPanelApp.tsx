@@ -978,8 +978,9 @@
                                 element = lookup(doc, srcPath) || element;
                             }
                             if (element) {
-                                // console.log("JCH inspect element: ",element);
+                                console.log("JCH BEFORE inspect element: ",element);
                                 inspect(element);
+                                console.log("JCH AFTER inspect element: ",element);
                                 var elementRect = element.getBoundingClientRect();
                                 var absoluteElementTop = elementRect.top + window.pageYOffset;
                                 var middle = absoluteElementTop - 100;
@@ -1071,7 +1072,7 @@
         }
     
         getSelectedItem(item: IReportItem) {
-            // console.log("Function: getSelectedItem");
+            console.log("Function: getSelectedItem");
             console.log("item = ",item);
             this.setState({ selectedIssue: item });
         }

@@ -186,7 +186,7 @@ TabMessaging.addListener("DRAW_TABS_TO_CONTEXT_SCRIPTS", async (message: any) =>
     for (let i = 0; i < frames.length; i++) {
         // console.log("frames[",i,"]=",frames[i]);
         if (frames[i] != null) {
-            if (frames[i].contentDocument) {
+            if (frames[i].contentDocument) { // needed for Firefox to catch cross-origin iframes
                 // console.log("add iframe listener");
                 frames[i].contentWindow?.addEventListener('keyup', function(event:any) {
                     console.log("iframe key catcher");
@@ -1031,6 +1031,8 @@ function makeCircleSmall(x1: number, y1: number, circleNumber: string, radius: n
     circleClone.setAttribute('r', String(radius));
     circleClone.setAttribute('xpath', xpath);
     circleClone.onclick = () => {
+        console.log("Clicked circle: ",circleNumber );
+        console.log("TabMessaging.sendToBackground TABSTOP_XPATH_ONCLICK");
         TabMessaging.sendToBackground("TABSTOP_XPATH_ONCLICK", { xpath: xpath, circleNumber: circleNumber + 1 })
     };
     if (document.getElementById("svgCircle") == null) {
@@ -1073,6 +1075,8 @@ function makeTriangle(x1: number, y1: number, x2: number, y2: number,x3: number,
     triangleClone.setAttribute('pointer-events', "auto");
     triangleClone.setAttribute('xpath', xpath);
     triangleClone.onclick = () => {
+        console.log("Clicked triangle: ",circleNumber );
+        console.log("TabMessaging.sendToBackground TABSTOP_XPATH_ONCLICK");
         TabMessaging.sendToBackground("TABSTOP_XPATH_ONCLICK", { xpath: xpath, circleNumber: circleNumber + 1 })
     };
     if (document.getElementById("svgCircle") == null) {
