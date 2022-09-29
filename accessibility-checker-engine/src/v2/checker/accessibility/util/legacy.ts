@@ -2306,6 +2306,9 @@ export class RPTUtil {
                     break;
                 }
                 case "footer": {
+                    let ancestorElem = RPTUtil.getAncestor(ruleContext, "article") || RPTUtil.getAncestor(ruleContext, "aside")
+                                || RPTUtil.getAncestor(ruleContext, "main") || RPTUtil.getAncestor(ruleContext, "nav")
+                                || RPTUtil.getAncestor(ruleContext, "section");
                     let ancestor = RPTUtil.getAncestorWithRole(ruleContext, "article", true);
                     if (ancestor === null)
                         ancestor = RPTUtil.getAncestorWithRole(ruleContext, "complementary", true);
@@ -2315,12 +2318,13 @@ export class RPTUtil {
                         ancestor = RPTUtil.getAncestorWithRole(ruleContext, "navigation", true);
                     if (ancestor === null)
                         ancestor = RPTUtil.getAncestorWithRole(ruleContext, "region", true);
-                    ancestor !== null ? tagProperty = specialTagProperties["des-section-article"] : tagProperty = specialTagProperties["not-des-section-article"];
+                    (ancestorElem !== null && ancestor !== null) ? tagProperty = specialTagProperties["des-section-article"] : tagProperty = specialTagProperties["not-des-section-article"];
                     break;
                 }
                 case "header":
-                    // TODO: need to check If a descendant of an article, aside, main, nav or section element
-                    // that might be different than the role because an element may take other roles
+                    let ancestorElem = RPTUtil.getAncestor(ruleContext, "article") || RPTUtil.getAncestor(ruleContext, "aside")
+                                || RPTUtil.getAncestor(ruleContext, "main") || RPTUtil.getAncestor(ruleContext, "nav")
+                                || RPTUtil.getAncestor(ruleContext, "section");
                     let ancestor = RPTUtil.getAncestorWithRole(ruleContext, "article", true);
                     if (ancestor === null)
                         ancestor = RPTUtil.getAncestorWithRole(ruleContext, "complementary", true);
@@ -2330,7 +2334,7 @@ export class RPTUtil {
                         ancestor = RPTUtil.getAncestorWithRole(ruleContext, "navigation", true);
                     if (ancestor === null)
                         ancestor = RPTUtil.getAncestorWithRole(ruleContext, "region", true);
-                    ancestor !== null ? tagProperty = specialTagProperties["des-section-article-aside-main-nav"] : tagProperty = specialTagProperties["not-des-section-article"];
+                    (ancestorElem !== null && ancestor !== null) ? tagProperty = specialTagProperties["des-section-article-aside-main-nav"] : tagProperty = specialTagProperties["not-des-section-article"];
                     break;
                 case "img":
                     if (ruleContext.hasAttribute("alt")) {
@@ -2339,6 +2343,13 @@ export class RPTUtil {
                         RPTUtil.hasAriaLabel(ruleContext) ? tagProperty = specialTagProperties["img-with-alt-text"] : tagProperty = specialTagProperties["img-without-alt"];
                     }
                     break;
+                case "div":
+                    if (ruleContext.parentElement && ruleContext.parentElement.nodeName.toLowerCase() === 'dl') {
+                        tagProperty = specialTagProperties["child-of-dl"];
+                    } else {
+                        tagProperty = specialTagProperties["not-child-of-dl"];
+                    }
+                    break;    
                 case "input":
                     if (RPTUtil.attributeNonEmpty(ruleContext, "type")) {
                         let type = ruleContext.getAttribute("type").trim().toLowerCase();

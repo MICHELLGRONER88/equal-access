@@ -770,22 +770,29 @@ export class ARIAMapper extends CommonMapper {
         return {
             "a": function(element) {
                 // If it doesn't represent a hyperlink, no corresponding role
-                if (!element.hasAttribute("href")) return null;
+                if (!element.hasAttribute("href")) return "generic";
                 return "link";
             },
             "area": function(element) {
                 // If it doesn't represent a hyperlink, no corresponding role
-                if (!element.hasAttribute("href")) return null;
+                if (!element.hasAttribute("href")) return "generic";
                 return "link";
             },
             "article": "article",
             "aside": "complementary",
+            "b": "generic",
+            "bdi": "generic",
+            "bdo": "generic",
+            "body": "generic",
             "button": "button",
+            "data": "generic",
             "datalist": "listbox",
             "dd": "definition",
             "details": "group",
             "dfn": "term",
             "dialog": "dialog",
+            "div": "generic",
+            "em": "emphasis",
             "dt": "term",
             "fieldset": "group",
             "figure": "figure",
@@ -796,7 +803,7 @@ export class ARIAMapper extends CommonMapper {
                     let role = (parent.nodeType === 1 && (parent as HTMLElement).getAttribute("role")) || ""
                     let nodeName = parent.nodeName.toLowerCase();
                     if (sectioningRoots[nodeName] || sectioningContent[nodeName] || sectioningRole[role]) {
-                        return (nodeName === "body") ? "contentinfo" : null;
+                        return (nodeName === "body") ? "contentinfo" : "generic";
                     }
                     parent = DOMWalker.parentNode(parent);
                 }
@@ -820,14 +827,16 @@ export class ARIAMapper extends CommonMapper {
                     let nodeName = parent.nodeName.toLowerCase();
                     let role = (parent.nodeType === 1 && (parent as HTMLElement).getAttribute("role")) || ""
                     if (sectioningRoots[nodeName] || sectioningContent[nodeName] || sectioningRole[role]) {
-                        return (nodeName === "body") ? "banner" : null;
+                        return (nodeName === "body") ? "banner" : "generic";
                     }
                     parent = DOMWalker.parentNode(parent);
                 }
                 return null;
             },
             "hr": "separator",
+            "hgroup": "generic",
             "html": "document",
+            "i": "generic",
             "img": function(element) {
                 if (element.hasAttribute("alt") && element.getAttribute("alt").length === 0) {
                     return "presentation";
@@ -841,12 +850,17 @@ export class ARIAMapper extends CommonMapper {
             "main": "main",
             "math": "math",
             "menu": "list",
+            "meter": "meter",
             "nav": "navigation",
             "ol": "list",
             "optgroup": "group",
             "option": "option",
             "output": "status",
+            "p": "garagraph",
+            "pre": "generic",
             "progress": "progressbar",
+            "q": "generic",
+            "samp": "generic",
             "section": function(element) {
                 let name = ARIAMapper.computeName(element);
                 return (name && name.trim().length > 0) ? "region" : null;
@@ -858,6 +872,8 @@ export class ARIAMapper extends CommonMapper {
                     return "combobox";
                 }
             },
+            "small": "generic",
+            "span": "generic",
             "summary": "button",
             "svg": "graphics-document",
             "table": "table",
@@ -937,7 +953,8 @@ export class ARIAMapper extends CommonMapper {
                 }
                 return null;
             },
-            "ul": "list"
+            "ul": "list",
+            "u": "generic"
         }
     })()
 }

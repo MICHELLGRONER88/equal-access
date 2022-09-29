@@ -26,7 +26,8 @@ export interface IDocumentConformanceRequirement {
     otherDisallowedAriaAttributes?: string[],
     otherRolesForAttributes?: string[], //roles, other than implicit and valid roles, whose attributes are also allowed
     // a few elements (such as datalist, html, caption) that have an implicit role but disallow some or all attributes allowed for the role.
-    allowAttributesFromImplicitRole?: boolean  
+    allowAttributesFromImplicitRole?: boolean,
+    nameProhibited?: boolean   //if true, authors MUST NOT specify an aria-label or aria-labelledby attribute unless the implict role is ovewriiten  
 }
 
 export class ARIADefinitions {
@@ -939,7 +940,7 @@ export class ARIADefinitions {
             htmlEquiv: null,
             roleType: "structure",
             nameFrom: ["prohibited"],
-            prohibitedProps: ["aria-label", "aria-labelledby", "aria-roledescription"],
+            prohibitedProps: ["aria-brailleroledescription", "aria-label", "aria-labelledby", "aria-roledescription"],
             deprecatedProps: ['aria-disabled', 'aria-errormessage', 'aria-haspopup', 'aria-invalid'] 
         },
 
@@ -1658,12 +1659,14 @@ export class ARIADefinitions {
         "abbr": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "address": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "article": {
             implicitRole: ["article"],
@@ -1681,9 +1684,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: true
         },
         "b": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "base": {
             implicitRole: null,
@@ -1691,14 +1695,16 @@ export class ARIADefinitions {
             globalAriaAttributesValid: false
         },
         "bdi": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "bdo": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "blockquote": {
             implicitRole: ["blockquote"],
@@ -1706,9 +1712,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: true
         },
         "body": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: null,
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "br": {
             implicitRole: null,
@@ -1730,17 +1737,20 @@ export class ARIADefinitions {
             implicitRole: ['caption'],
             validRoles: null,
             globalAriaAttributesValid: true,
-            allowAttributesFromImplicitRole: false
+            allowAttributesFromImplicitRole: false,
+            nameProhibited: true
         },
         "cite": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "code": {
             implicitRole: ["code"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "col": {
             implicitRole: null,
@@ -1753,9 +1763,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: false
         },
         "data": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "datalist": {
             implicitRole: ["listbox"],
@@ -1771,7 +1782,8 @@ export class ARIADefinitions {
         "del": {
             implicitRole: ["deletion"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "details": {
             implicitRole: ["group"],
@@ -1788,12 +1800,6 @@ export class ARIADefinitions {
             validRoles: ["alertdialog"],
             globalAriaAttributesValid: true
         },
-        "div": {
-            //TODO: conditional 'Any', otherwise 'presentation | none'
-            implicitRole: null,
-            validRoles: ["any"],
-            globalAriaAttributesValid: true
-        },
         "dl": {
             implicitRole: null,
             validRoles: ["group", "list", "none", "presentation"],
@@ -1805,9 +1811,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: true
         },
         "em": {
-            implicitRole: null,
+            implicitRole: ["emphasis"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "embed": {
             implicitRole: null,
@@ -1822,7 +1829,8 @@ export class ARIADefinitions {
         "figcaption": {
             implicitRole: null,
             validRoles: ["group", "none", "presentation"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "form": {
             implicitRole: ["form"],
@@ -1835,9 +1843,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: false
         },
         "hgroup": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "h1": {
             implicitRole: ["heading"],
@@ -1881,9 +1890,10 @@ export class ARIADefinitions {
             allowAttributesFromImplicitRole: false
         },
         "i": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "iframe": {
             implicitRole: null,
@@ -1893,22 +1903,26 @@ export class ARIADefinitions {
         "ins": {
             implicitRole: ["insertion"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "kbd": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "label": {
             implicitRole: null,
             validRoles: null,
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "legend": {
             implicitRole: null,
             validRoles: null,
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "li": {
             implicitRole: ["listitem"],
@@ -1933,7 +1947,8 @@ export class ARIADefinitions {
         "mark": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "math": {
             implicitRole: ["math"],
@@ -1996,7 +2011,8 @@ export class ARIADefinitions {
         "p": {
             implicitRole: ["paragraph"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "param": {
             implicitRole: null,
@@ -2010,9 +2026,10 @@ export class ARIADefinitions {
             otherAllowedAriaAttributes: ["aria-hidden"] 
         },
         "pre": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "progress": {
             implicitRole: ["progressbar"],
@@ -2021,9 +2038,10 @@ export class ARIADefinitions {
             otherDisallowedAriaAttributes: ["aria-valuemax"] 
         },
         "q": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "rp": {
             implicitRole: null,
@@ -2033,7 +2051,8 @@ export class ARIADefinitions {
         "rt": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "ruby": {
             implicitRole: null,
@@ -2043,12 +2062,14 @@ export class ARIADefinitions {
         "s": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "samp": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "script": {
             implicitRole: null,
@@ -2061,9 +2082,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: false
         },
         "small": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "source": {
             implicitRole: null,
@@ -2071,9 +2093,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: false
         },
         "span": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "strong": {
             implicitRole: ["strong"],
@@ -2098,7 +2121,8 @@ export class ARIADefinitions {
         "sup": {
             implicitRole: ["superscript"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "svg": {
             implicitRole: ["graphics-document"], // as defined by SVG AAM
@@ -2146,9 +2170,10 @@ export class ARIADefinitions {
             globalAriaAttributesValid: false
         },
         "u": {
-            implicitRole: null,
+            implicitRole: ["generic"],
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "ul": {
             implicitRole: ["list"],
@@ -2158,7 +2183,8 @@ export class ARIADefinitions {
         "var": {
             implicitRole: null,
             validRoles: ["any"],
-            globalAriaAttributesValid: true
+            globalAriaAttributesValid: true,
+            nameProhibited: true
         },
         "video": {
             implicitRole: null,
@@ -2187,10 +2213,11 @@ export class ARIADefinitions {
                 otherDisallowedAriaAttributes: ["aria-disabled=true"]
             },
             "without-href": {
-                implicitRole: null,
+                implicitRole: ["generic"],
                 //roleCondition: " when href attribute is not present",
                 validRoles: ["any"],
-                globalAriaAttributesValid: true
+                globalAriaAttributesValid: true,
+                nameProhibited: true
             }
         },
         "area": {
@@ -2201,11 +2228,28 @@ export class ARIADefinitions {
                 globalAriaAttributesValid: true
             },
             "without-href": {
-                implicitRole: null,
+                implicitRole: ["generic"],
                 //roleCondition: " when href attribute is not present",
                 validRoles: ["button", "link"],
-                globalAriaAttributesValid: true
+                globalAriaAttributesValid: true,
+                nameProhibited: true
             }
+        },
+        "div": {
+            "child-of-dl": {
+                implicitRole: ["generic"],
+                validRoles: ["presentation", "none"],
+                globalAriaAttributesValid: true,
+                nameProhibited: true
+            },
+            "not-child-of-dl": {
+                implicitRole: ["generic"],
+                validRoles: ["any"],
+                globalAriaAttributesValid: true,
+                nameProhibited: true
+            }
+            //TODO: conditional 'Any', otherwise 'presentation | none'
+            
         },
 // TODO
 //        "autonomous custom element": {
@@ -2228,10 +2272,11 @@ export class ARIADefinitions {
         },
         "footer": {
             "des-section-article-aside-main-nav": {
-                implicitRole: null,
+                implicitRole: ["generic"],
                 //roleCondition: " when descendant of an article, aside, main, nav or section element",
                 validRoles: ["doc-footnote", "group", "none", "presentation"],
-                globalAriaAttributesValid: true
+                globalAriaAttributesValid: true,
+                nameProhibited: true
             },
             "not-des-section-article": {
                 implicitRole: ["contentinfo"],
@@ -2249,10 +2294,11 @@ export class ARIADefinitions {
 
         "header": {
             "des-section-article-aside-main-nav": {
-                implicitRole: null,
+                implicitRole: ["generic"],
                 //roleCondition: " when descendant of an article, aside, main, nav or section element",
                 validRoles: ["group", "none", "presentation"],
-                globalAriaAttributesValid: true
+                globalAriaAttributesValid: true,
+                nameProhibited: true
             },
             "not-des-section-article": {
                 implicitRole: ["banner"],
