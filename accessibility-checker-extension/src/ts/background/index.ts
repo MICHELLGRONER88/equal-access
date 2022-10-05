@@ -31,7 +31,7 @@
         //             "   chrome.scripting = ",chrome.scripting, 
         //             "   chrome.scripting.executeScript",chrome.scripting.executeScript);
         if (chrome && chrome.scripting && chrome.scripting.executeScript) {
-            console.log("Do chrome.scripting.executeScript(params, pCB)");
+            console.log("Do chrome.scripting.executeScript params = ",params, "   pCB = ",pCB);
             chrome.scripting.executeScript(params, pCB);
         } else {
             if (params.func) {
@@ -43,6 +43,9 @@
                         matchAboutBlank: true
                     },
                     (res) => {
+                        console.log("code: = ",params.func.toString());
+                        console.log("code: = ", `ace` ? "yes" : "no" );
+                        console.log("code: = ", `window.aceIBMa` ? "yes" : "no" );
                         console.log("myExecuteScript res 1 = ",res);
                         if (!res) {
                             pCB && pCB(res);
@@ -69,6 +72,8 @@
                                     matchAboutBlank: true
                                 },
                                 (res) => {
+                                    console.log("code: = ", `ace` ? "yes" : "no" );
+                                    console.log("code: = ", `window.aceIBMa` ? "yes" : "no" );
                                     console.log("myExecuteScript res 2 = ",res);
                                     if (!res) {
                                         pCB && pCB(res);
