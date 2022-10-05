@@ -26,7 +26,12 @@
         params: any, 
         pCB?: (any) | undefined): void
     {
+        console.log("Function: myExecuteScript START");
+        // console.log("chrome =",chrome,
+        //             "   chrome.scripting = ",chrome.scripting, 
+        //             "   chrome.scripting.executeScript",chrome.scripting.executeScript);
         if (chrome && chrome.scripting && chrome.scripting.executeScript) {
+            console.log("Do chrome.scripting.executeScript(params, pCB)");
             chrome.scripting.executeScript(params, pCB);
         } else {
             if (params.func) {
@@ -38,6 +43,7 @@
                         matchAboutBlank: true
                     },
                     (res) => {
+                        console.log("myExecuteScript res 1 = ",res);
                         if (!res) {
                             pCB && pCB(res);
                         } else {
@@ -54,6 +60,7 @@
                     },
                     (res) => {
                         if (params.files[0].includes("ace.js")) {
+                            console.log("code: window.aceIBMa = ace");
                             chrome.tabs.executeScript(
                                 params.target.tabId as number,
                                 { 
@@ -62,6 +69,7 @@
                                     matchAboutBlank: true
                                 },
                                 (res) => {
+                                    console.log("myExecuteScript res 2 = ",res);
                                     if (!res) {
                                         pCB && pCB(res);
                                     } else {
@@ -71,13 +79,17 @@
                         } else {
                             pCB && pCB(res.map(item => ({ result: item })));
                         }
-                    })
+                    }
+                )
             }
         }
+        console.log("Function: myExecuteScript DONE");
     }
     
     async function initTab(tabId: number, archiveId: string) {
+        console.log("Function: initTab START");
         // Determine if we've ever loaded any engine
+        console.log("Determine if we've ever loaded any engine");
         let isLoaded = await new Promise((resolve, reject) => {
             myExecuteScript({
                 target: { tabId: tabId, frameIds: [0] },
@@ -94,7 +106,7 @@
         });
     
         
-    
+        console.log("Switch to the appropriate engine for this archiveId");
         // Switch to the appropriate engine for this archiveId
         let engineFile = await EngineCache.getEngine(archiveId);
         await new Promise((resolve, reject) => {
@@ -124,6 +136,7 @@
             })
         });
 
+        console.log("Initialize the listeners once");
         // Initialize the listeners once
         if (!isLoaded) {
             await new Promise((resolve, reject) => {
@@ -138,6 +151,7 @@
                 });
             });
         }
+        console.log("Function: initTab DONE");
     }
     
     BackgroundMessaging.addListener("DAP_CACHED", async (message: any) => {
@@ -148,6 +162,7 @@
     
     BackgroundMessaging.addListener("DAP_SCAN", async (message: any) => {
         chrome.storage.local.get("OPTIONS", async function (result: any) {
+            console.log("Background Listener: DAP_SCAN START");
             try {
                 // Determine which archive we're scanning with
                 let archiveId = Config.defaultArchiveId + "";
@@ -167,7 +182,7 @@
                 if (result.OPTIONS && result.OPTIONS.selected_ruleset && validPolicy(result.OPTIONS.selected_ruleset.id)) {
                     policyId = result.OPTIONS.selected_ruleset.id;
                 }
-    
+                console.log("Send message to TAB to scan");
                 await BackgroundMessaging.sendToTab(message.tabId, "DAP_SCAN_TAB", {
                     tabId: message.tabId,
                     tabURL: message.tabURL,
@@ -179,7 +194,7 @@
             } catch (err) {
                 console.error(err);
             }
-    
+            console.log("Background Listener: DAP_SCAN DONE");
             return true;
         });
     });
@@ -230,6 +245,7 @@
     
     BackgroundMessaging.addListener("DAP_Rulesets", async (message: any) => {
         return await new Promise((resolve, reject) => {
+            console.log("DAP_Rulesets Listener START");
             chrome.storage.local.get("OPTIONS", async function (result: any) {
                 let archiveId = Config.defaultArchiveId + "";
                 // console.log("result.OPTIONS.selected_archive = ",(typeof(result.OPTIONS.selected_archive)));
@@ -240,20 +256,26 @@
                 }
                 await initTab(message.tabId, archiveId);
                 try {
+                    console.log("use new (window as any).aceIBMa.Checker().rulesets");
                     myExecuteScript({
                         target: { tabId: message.tabId, frameIds: [0] },
                         func: () => (new (window as any).aceIBMa.Checker().rulesets)
                     }, function (res: any) {
-                        if (chrome.runtime.lastError) {
+                        console.log("rulesets myExecuteScript function res = ",res[0].result);
+                        if (chrome.runtime.lastError) { // JCH this is where the promise is not met in FF
+                            console.log("reject");
                             reject(chrome.runtime.lastError.message);
                         } else {
+                            console.log("resolve");
                             resolve(res[0].result);
                         }
                     })
                 } catch (err) {
+                    console.log("reject 2");
                     reject(err);
                 }
             })
+            console.log("DAP_Rulesets Listener DONE");
         });
     });
     
