@@ -262,32 +262,32 @@
         }
     
         async readOptionsData() {
-            // console.log("Function: readOptionsData START");
+            console.log("Function: readOptionsData START");
             await new Promise<void>((resolve, _reject) => {
                 var self = this;
                 chrome.storage.local.get("OPTIONS", async  (result: any) => {
-                    // console.log(result.OPTIONS);
+                    console.log(result.OPTIONS);
                     // pick default archive id from env
                     let archiveId = process.env.defaultArchiveId + "";
-                    // console.log("archiveId 1 = ",archiveId);
+                    console.log("archiveId 1 = ",archiveId);
                     const archives = await self.getArchives();
                     const validArchive = ((id: string) => id && archives.some((archive:any) => archive.id === id));
     
                     // if default archive id is not good, pick 'latest'
                     if (!validArchive(archiveId)) {
                         archiveId = "latest";
-                        // console.log("archiveId 2 = ",archiveId);
+                        console.log("archiveId 2 = ",archiveId);
                     }
     
                     // use archive id if it is in storage,
                     if (result.OPTIONS && result.OPTIONS.selected_archive && validArchive(result.OPTIONS.selected_archive.id)) {
                         archiveId = result.OPTIONS.selected_archive.id;
-                        // console.log("archiveId 3 = ",archiveId);
+                        console.log("archiveId 3 = ",archiveId);
                     } else {
                         archiveId = "latest";
                     }
     
-                    // console.log("archiveId 3a = ",archiveId);
+                    console.log("archiveId 3a = ",archiveId);
                     
     
                     let selectedArchive = archives.filter((archive:any) => archive.id === archiveId)[0];
@@ -324,10 +324,10 @@
                     // and get url using chrome.tabs.get via message "TAB_INFO"
                     let thisTabId = chrome.devtools.inspectedWindow.tabId;
                     let tab = await PanelMessaging.sendToBackground("TAB_INFO", { tabId: thisTabId });
-                    // console.log("tab.id = ", tab.id);
-                    // console.log("tab.url = ", tab.url);
-                    // console.log("tab.title = ", tab.title);
-                    // console.log("tab.canScan = ",tab.canScan);
+                    console.log("tab.id = ", tab.id);
+                    console.log("tab.url = ", tab.url);
+                    console.log("tab.title = ", tab.title);
+                    console.log("tab.canScan = ",tab.canScan);
                     if (tab.id && tab.url && tab.id && tab.title) {
     
                         if (!tab.canScan) {
@@ -345,14 +345,17 @@
                                 self.setState({ badURL: false });
                             }
                         }
+                        console.log("PanelMessaging.sendToBackground(DAP_Rulesets");
                         let rulesets = await PanelMessaging.sendToBackground("DAP_Rulesets", { tabId: tab.id })
-    
+                        console.log("options: AFTER rulesets");
                         if (rulesets.error) {
+                            console.log("Got rulesets error");
                             self.setError(rulesets);
                             return;
                         }
     
                         if (!self.state.listenerRegistered) {
+                            console.log("listeners not registered");
                             PanelMessaging.addListener("TAB_UPDATED", async message => {
                                 self.setState({ tabTitle: message.tabTitle }); // added so titles updated
                                 if (message.tabId === self.state.tabId && message.status === "loading") {
@@ -376,16 +379,16 @@
                         
     
                         // store OPTIONS
-                        // console.log("Store OPTIONS");
-                        // console.log("archiveId 4 = ",archiveId);
-                        // console.log("policyName = ",policyId);
+                        console.log("Store OPTIONS");
+                        console.log("archiveId 4 = ",archiveId);
+                        console.log("policyName = ",policyId);
                         self.setState({ rulesets: rulesets, listenerRegistered: true, tabURL: tab.url, 
                             tabId: tab.id, tabTitle: tab.title, tabCanScan: tab.canScan, error: null, archives, 
                             selectedArchive: archiveId, selectedPolicy: policyName, tabStopLines: tabStopLines, 
                             tabStopOutlines: tabStopOutlines, tabStopAlerts: tabStopAlerts, tabStopFirstTime: tabStopFirstTime,
     
                         });
-                        // console.log("Function: readOptionsData DONE");
+                        console.log("Function: readOptionsData DONE");
                     }
                     resolve();
                 });
@@ -421,15 +424,15 @@
         }
     
         async startScan() {
-            // console.log("Function: startScan START");
+            console.log("Function: startScan START");
             let tabURL = this.state.tabURL;
             let tabId = this.state.tabId;
-    
+            console.log("startScan 0");
             await this.readOptionsData();
-    
+            console.log("startScan 1");
             let thisTabId = chrome.devtools.inspectedWindow.tabId;
             let tab = await PanelMessaging.sendToBackground("TAB_INFO", { tabId: thisTabId });
-    
+            console.log("startScan 2");
             if (!tab.canScan) {
                 if (this.state.badURL === false) {
                     this.setState({ badURL: true });
@@ -441,7 +444,7 @@
                     this.setState({ badURL: false });
                 } 
             }
-    
+            console.log("startScan 3");
             this.state.prevTabURL = tabURL;
     
             if (tabId === -1) {
@@ -449,12 +452,13 @@
             } else {
                 this.setState({ numScanning: this.state.numScanning + 1, scanning: true });
                 try {
+                    console.log("PanelMessaging.sendToBackground DAP_SCAN");
                     await PanelMessaging.sendToBackground("DAP_SCAN", { tabId: tabId, tabURL:  tabURL, origin: this.props.layout});
                 } catch (err) {
                     console.error(err);
                 }
             }
-            // console.log("Function: startScan DONE");
+            console.log("Function: startScan DONE");
         }
     
         // JCH - not used
