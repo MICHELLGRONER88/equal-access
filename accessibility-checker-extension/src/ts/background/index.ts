@@ -44,8 +44,6 @@
                     },
                     (res) => {
                         console.log("code: = ",params.func.toString());
-                        console.log("code: = ", `ace` ? "yes" : "no" );
-                        console.log("code: = ", `window.aceIBMa` ? "yes" : "no" );
                         console.log("myExecuteScript res 1 = ",res);
                         if (!res) {
                             pCB && pCB(res);
@@ -63,17 +61,15 @@
                     },
                     (res) => {
                         if (params.files[0].includes("ace.js")) {
-                            console.log("code: window.aceIBMa = ace");
                             chrome.tabs.executeScript(
                                 params.target.tabId as number,
                                 { 
-                                    code: `window.aceIBMa = ace`,
+                                    code: `window.ace = ace`,
+                                    // code: `window.aceIBMa = ace`,
                                     frameId: params.target.frameIds[0],
                                     matchAboutBlank: true
                                 },
                                 (res) => {
-                                    console.log("code: = ", `ace` ? "yes" : "no" );
-                                    console.log("code: = ", `window.aceIBMa` ? "yes" : "no" );
                                     console.log("myExecuteScript res 2 = ",res);
                                     if (!res) {
                                         pCB && pCB(res);
@@ -96,12 +92,14 @@
         // Determine if we've ever loaded any engine
         console.log("Determine if we've ever loaded any engine");
         let isLoaded = await new Promise((resolve, reject) => {
+            console.log("initTab: call myExecuteScript");
             myExecuteScript({
                 target: { tabId: tabId, frameIds: [0] },
-                func: () => {
-                    (window as any).aceIBMa =  (window as any).ace
-                    return(typeof (window as any).aceIBMa)
-                }
+                func: () => (typeof (window as any).ace)
+                // func: () => {
+                //     (window as any).aceIBMa =  (window as any).ace
+                //     return(typeof (window as any).aceIBMa)
+                // }
             }, function (res: any) {
                 if (chrome.runtime.lastError) {
                     reject(chrome.runtime.lastError.message);
@@ -115,6 +113,7 @@
         // Switch to the appropriate engine for this archiveId
         let engineFile = await EngineCache.getEngine(archiveId);
         await new Promise((resolve, reject) => {
+            console.log("initTab: call myExecuteScript");
             myExecuteScript({
                 target: { tabId: tabId, frameIds: [0] },
                 files: [engineFile]
@@ -126,25 +125,28 @@
             });
         });
     
-        await new Promise((resolve, reject) => {
-            myExecuteScript({
-                target: { tabId: tabId, frameIds: [0] },
-                func: () => {
-                    ((window as any).aceIBMa = (window as any).ace);
-                    (window as any).ace = (window as any).aceIBMa;
-                }
-            }, function (res: any) {
-                if (chrome.runtime.lastError) {
-                    reject(chrome.runtime.lastError.message);
-                }
-                resolve(res);
-            })
-        });
+        // Tom said to add this not in original
+        // await new Promise((resolve, reject) => {
+        //     console.log("initTab: call myExecuteScript");
+        //     myExecuteScript({
+        //         target: { tabId: tabId, frameIds: [0] },
+        //         func: () => {
+        //             ((window as any).aceIBMa = (window as any).ace);
+        //             (window as any).ace = (window as any).aceIBMa;
+        //         }
+        //     }, function (res: any) {
+        //         if (chrome.runtime.lastError) {
+        //             reject(chrome.runtime.lastError.message);
+        //         }
+        //         resolve(res);
+        //     })
+        // });
 
         console.log("Initialize the listeners once");
         // Initialize the listeners once
         if (!isLoaded) {
             await new Promise((resolve, reject) => {
+                console.log("initTab: call myExecuteScript");
                 myExecuteScript({
                     target: { tabId: tabId, frameIds: [0] },
                     files: ["/tabListeners.js"]
@@ -221,13 +223,17 @@
     
     BackgroundMessaging.addListener("TAB_INFO", async (message: any) => {
         return await new Promise((resolve, _reject) => {
+            console.log("BackgroundMessaging Listener TAB_INFO START");
             chrome.tabs.get(message.tabId, async function (tab: any) {
                 //chrome.tabs.get({ 'active': true, 'lastFocusedWindow': true }, async function (tabs) {
                 let canScan = await new Promise((resolve, _reject) => {
                     if (tab.id < 0) return resolve(false);
+                    console.log("TAB_INFO: call myExecuteScript");
+                    console.log("(typeof (window as any).ace) = ",(typeof (window as any).ace));
                     myExecuteScript({
                         target: { tabId: tab.id, frameIds: [0] },
-                        func: () => (typeof (window as any).aceIBMa)
+                        func: () => (typeof (window as any).ace)
+                        // func: () => (typeof (window as any).aceIBMa)
                     }, function (res: any) {
                         resolve(!!res);
                     })
@@ -235,6 +241,7 @@
                 tab.canScan = canScan;
                 resolve(tab);
             });
+            console.log("BackgroundMessaging Listener TAB_INFO DONE");
         });
     });
     
@@ -261,10 +268,12 @@
                 }
                 await initTab(message.tabId, archiveId);
                 try {
-                    console.log("use new (window as any).aceIBMa.Checker().rulesets");
+                    console.log("DAP_Rulesets: call myExecuteScript");
+                    console.log("(new (window as any).ace.Checker().rulesets) = ",(new (window as any).ace.Checker().rulesets));
                     myExecuteScript({
                         target: { tabId: message.tabId, frameIds: [0] },
-                        func: () => (new (window as any).aceIBMa.Checker().rulesets)
+                        func: () => (new (window as any).ace.Checker().rulesets)
+                        // func: () => (new (window as any).aceIBMa.Checker().rulesets)
                     }, function (res: any) {
                         console.log("rulesets myExecuteScript function res = ",res[0].result);
                         if (chrome.runtime.lastError) { // JCH this is where the promise is not met in FF
