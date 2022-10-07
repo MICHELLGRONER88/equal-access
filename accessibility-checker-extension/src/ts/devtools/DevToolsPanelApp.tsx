@@ -265,7 +265,6 @@
         }
     
         async readOptionsData() {
-            console.log("Function: readOptionsData START");
             await new Promise<void>((resolve, _reject) => {
                 var self = this;
                 chrome.storage.local.get("OPTIONS", async  (result: any) => {
@@ -348,9 +347,9 @@
                                 self.setState({ badURL: false });
                             }
                         }
-                        console.log("DO DAP_rulesets");
+                        
                         let rulesets = await PanelMessaging.sendToBackground("DAP_Rulesets", { tabId: tab.id })
-                        console.log("DAP_rulesets DONE rulesets = ",rulesets);
+                        
                         if (rulesets.error) {
                             self.setError(rulesets);
                             return;
@@ -389,7 +388,6 @@
                             tabStopOutlines: tabStopOutlines, tabStopAlerts: tabStopAlerts, tabStopFirstTime: tabStopFirstTime,
     
                         });
-                        console.log("Function: readOptionsData DONE");
                     }
                     resolve();
                 });

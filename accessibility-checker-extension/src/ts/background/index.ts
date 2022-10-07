@@ -26,14 +26,11 @@
         params: any, 
         pCB?: (any) | undefined): void
     {
-        console.log("Function: myExecuteScript START");
-        console.log("params = ",params);
-        console.log("pCB = ",pCB);
         if (chrome && chrome.scripting && chrome.scripting.executeScript) {
-            console.log("myExecuteScript Chrome branch");
+            console.log(params);
+            console.log(pCB);
             chrome.scripting.executeScript(params, pCB);
         } else {
-            console.log("myExecuteScript FF branch");
             if (params.func) {
                 chrome.tabs.executeScript(
                     params.target.tabId as number,
@@ -79,16 +76,13 @@
                     })
             }
         }
-        console.log("Function: myExecuteScript DONE");
     }
     
     async function initTab(tabId: number, archiveId: string) {
-        console.log("Function: initTab Start");
         // Determine if we've ever loaded any engine
         let isLoaded = await new Promise((resolve, reject) => {
             myExecuteScript({
                 target: { tabId: tabId, frameIds: [0] },
-                // func: () => (typeof (window as any).ace)
                 func: () => {
                     return(typeof (window as any).aceIBMa)
                 }
@@ -130,7 +124,6 @@
                 });
             });
         }
-        console.log("Function: initTab DONE");
     }
     
     BackgroundMessaging.addListener("DAP_CACHED", async (message: any) => {
@@ -140,7 +133,6 @@
     });
     
     BackgroundMessaging.addListener("DAP_SCAN", async (message: any) => {
-        console.log("BackgroundMessaging Listener DAP_SCAN START");
         chrome.storage.local.get("OPTIONS", async function (result: any) {
             try {
                 // Determine which archive we're scanning with
@@ -173,7 +165,6 @@
             } catch (err) {
                 console.error(err);
             }
-            console.log("BackgroundMessaging Listener DAP_SCAN DONE");
             return true;
         });
     });
@@ -194,7 +185,6 @@
     });
     
     BackgroundMessaging.addListener("TAB_INFO", async (message: any) => {
-        console.log("BackgroundMessaging Listener TAB_INFO START");
         return await new Promise((resolve, _reject) => {
             chrome.tabs.get(message.tabId, async function (tab: any) {
                 //chrome.tabs.get({ 'active': true, 'lastFocusedWindow': true }, async function (tabs) {
@@ -202,9 +192,10 @@
                     if (tab.id < 0) return resolve(false);
                     myExecuteScript({
                         target: { tabId: tab.id, frameIds: [0] },
-                        // func: () => (typeof (window as any).ace)
                         func: () => {
-                            // (window as any).aceIBMa =  (window as any).ace
+                            if (chrome && chrome.scripting) {
+                                (window as any).aceIBMa = (window as any).ace;
+                            } 
                             return(typeof (window as any).aceIBMa)
                         }
                     }, function (res: any) {
@@ -214,7 +205,6 @@
                 tab.canScan = canScan;
                 resolve(tab);
             });
-            console.log("BackgroundMessaging Listener TAB_INFO DONE");
         });
     });
     
@@ -229,7 +219,6 @@
     });
     
     BackgroundMessaging.addListener("DAP_Rulesets", async (message: any) => {
-        console.log("BackgroundMessaging Listener DAP_Rulesets START");
         return await new Promise((resolve, reject) => {
     
             chrome.storage.local.get("OPTIONS", async function (result: any) {
@@ -244,9 +233,10 @@
                 try {
                     myExecuteScript({
                         target: { tabId: message.tabId, frameIds: [0] },
-                        // func: () => (new (window as any).ace.Checker().rulesets)
                         func: () => {
-                            // (window as any).aceIBMa =  (window as any).ace
+                            if (chrome && chrome.scripting) {
+                                (window as any).aceIBMa = (window as any).ace;
+                            } 
                             return (new (window as any).aceIBMa.Checker().rulesets)
                         }
                         
@@ -261,7 +251,6 @@
                     reject(err);
                 }
             })
-            console.log("BackgroundMessaging Listener DAP_Rulesets DONE");
         });
     });
     
@@ -306,8 +295,6 @@
     });
     
     BackgroundMessaging.addListener("TABSTOP_XPATH_ONCLICK", async (message: any) => {
-        console.log("Message TABSTOP_XPATH_ONCLICK received in background, xpath: "+ message.xpath);
-        console.log("BackgroundMessaging.sendToPanel TABSTOP_XPATH_ONCLICK");
         await BackgroundMessaging.sendToPanel("TABSTOP_XPATH_ONCLICK", {
             xpath: message.xpath,
             circleNumber: message.circleNumber
