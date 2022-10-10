@@ -57,7 +57,7 @@
                             chrome.tabs.executeScript(
                                 params.target.tabId as number,
                                 { 
-                                    code: `window.ace = ace`,
+                                    code: `window.aceIBMa = ace`,
                                     frameId: params.target.frameIds[0],
                                     matchAboutBlank: true
                                 },
@@ -81,7 +81,10 @@
         let isLoaded = await new Promise((resolve, reject) => {
             myExecuteScript({
                 target: { tabId: tabId, frameIds: [0] },
-                func: () => (typeof (window as any).ace)
+                func: () => {
+                    (window as any).aceIBMaTemp =  (window as any).ace;
+                    return(typeof (window as any).aceIBMa);
+                }
             }, function (res: any) {
                 if (chrome.runtime.lastError) {
                     reject(chrome.runtime.lastError.message);
@@ -90,7 +93,20 @@
             })
         });
     
-        
+        await new Promise((resolve, reject) => {
+            myExecuteScript({
+                target: { tabId: tabId, frameIds: [0] },
+                func: () => {
+                    ((window as any).aceIBMa = (window as any).ace);
+                    (window as any).ace = (window as any).aceIBMaTemp;
+                }
+            }, function (res: any) {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError.message);
+                }
+                resolve(res);
+            })
+        });
     
         // Switch to the appropriate engine for this archiveId
         let engineFile = await EngineCache.getEngine(archiveId);
@@ -189,7 +205,7 @@
                     if (tab.id < 0) return resolve(false);
                     myExecuteScript({
                         target: { tabId: tab.id, frameIds: [0] },
-                        func: () => (typeof (window as any).ace)
+                        func: () => (typeof (window as any).aceIBMa)
                     }, function (res: any) {
                         resolve(!!res);
                     })
@@ -225,7 +241,7 @@
                 try {
                     myExecuteScript({
                         target: { tabId: message.tabId, frameIds: [0] },
-                        func: () => (new (window as any).ace.Checker().rulesets)
+                        func: () => (new (window as any).aceIBMa.Checker().rulesets)
                     }, function (res: any) {
                         if (chrome.runtime.lastError) {
                             reject(chrome.runtime.lastError.message);
