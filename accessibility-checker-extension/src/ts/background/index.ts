@@ -122,6 +122,21 @@
             });
         });
     
+        await new Promise((resolve, reject) => {
+            myExecuteScript({
+                target: { tabId: tabId, frameIds: [0] },
+                func: () => {
+                    ((window as any).aceIBMa = (window as any).ace);
+                    (window as any).ace = (window as any).aceIBMaTemp;
+                }
+            }, function (res: any) {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError.message);
+                }
+                resolve(res);
+            })
+        });
+
         // Initialize the listeners once
         if (!isLoaded) {
             await new Promise((resolve, reject) => {
@@ -228,7 +243,6 @@
     
     BackgroundMessaging.addListener("DAP_Rulesets", async (message: any) => {
         return await new Promise((resolve, reject) => {
-    
             chrome.storage.local.get("OPTIONS", async function (result: any) {
                 let archiveId = Config.defaultArchiveId + "";
                 // console.log("result.OPTIONS.selected_archive = ",(typeof(result.OPTIONS.selected_archive)));
@@ -297,8 +311,9 @@
     });
     
     BackgroundMessaging.addListener("TABSTOP_XPATH_ONCLICK", async (message: any) => {
-        console.log("Message TABSTOP_XPATH_ONCLICK received in background, xpath: "+ message.xpath);
-        console.log("BackgroundMessaging.sendToPanel TABSTOP_XPATH_ONCLICK");
+
+       // console.log("Message TABSTOP_XPATH_ONCLICK received in background, xpath: "+ message.xpath);
+
         await BackgroundMessaging.sendToPanel("TABSTOP_XPATH_ONCLICK", {
             xpath: message.xpath,
             circleNumber: message.circleNumber
