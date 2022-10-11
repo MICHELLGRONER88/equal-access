@@ -238,9 +238,11 @@
         }
     
         async xpathFromTabstops(message: any) {
+            console.log("xpathFromTabstops XPath:", message.xpath, " circleNumber: ", message.circleNumber);
             // JCH take xpath and match to item with same item.path.dom
             this.state.tabStopsResults.map((result: any) => {
                 if (message.xpath === result.path.dom) {
+                    console.log("result xpath = ",result.path.dom);
                     this.getSelectedItem(result);
                     this.selectItem(result);
                 }
@@ -248,6 +250,7 @@
             // JCH the selected item needs to scroll into view
             this.state.tabStopsErrors.map((result: any) => {
                 if (message.xpath === result.path.dom) {
+                    console.log("result xpath = ",result.path.dom);
                     this.getSelectedItem(result);
                     this.selectItem(result);
                 }
@@ -892,9 +895,8 @@
         }
     
         selectItem(item?: IReportItem, checkpoint?: ICheckpoint) {
-
-            // console.log("Function: selectItem");
-
+            console.log("Function: selectItem");
+            console.log("item = ",item);
             if (this.state.report) {
                 if (!item) {
                     for (const resultItem of this.state.report.results) {
@@ -922,6 +924,7 @@
                         }
                         this.setState({ selectedItem: item, report: this.state.report, selectedCheckpoint: checkpoint });
                     } else if (this.props.layout === "sub") {
+                        console.log("sub part of select item");
                         if (this.state.report) {
                             for (const resultItem of this.state.report.results) {
                                 resultItem.selected = resultItem.path.dom === item.path.dom;
@@ -975,8 +978,9 @@
                                 element = lookup(doc, srcPath) || element;
                             }
                             if (element) {
-                                // console.log("JCH inspect element: ",element);
+                                console.log("JCH BEFORE inspect element: ",element);
                                 inspect(element);
+                                console.log("JCH AFTER inspect element: ",element);
                                 var elementRect = element.getBoundingClientRect();
                                 var absoluteElementTop = elementRect.top + window.pageYOffset;
                                 var middle = absoluteElementTop - 100;
@@ -998,7 +1002,7 @@
                             if (!result) {
                                 console.log('Could not select element, it may have moved');
                             } else {
-                                // console.log("result from selectItem = ",result);
+                                console.log("result from selectItem = ",result);
                             }
                             // do focus after inspected Window script
                             setTimeout(() => {
@@ -1068,8 +1072,8 @@
         }
     
         getSelectedItem(item: IReportItem) {
-            // console.log("Function: getSelectedItem");
-            // console.log("item = ",item);
+            console.log("Function: getSelectedItem");
+            console.log("item = ",item);
             this.setState({ selectedIssue: item });
         }
     
@@ -1083,15 +1087,13 @@
         }
     
         setTabStopsShowHide() {
-            // console.log("function: setTabStopsShowHide");
-            // let mythis = this;
             if (this.state.showHideTabStops) {
                 this.setState({ showHideTabStops: false });
             } else {
                 this.setState({ showHideTabStops: true });
             }
             setTimeout(function () {
-                // console.log("showHideTabStops = ", mythis.state.showHideTabStops);
+                // console.log("tabStopsPanel2 = ", mythis.state.tabStopsPanel);
             }, 10);
         }
     
@@ -1124,13 +1126,16 @@
         };
     
         tabStopsHandler() {
-            // console.log("Function: tabStopsHandler START");
+            console.log("tabStopsHandler START");
+            // let mythis = this;
+            console.log("PanelMessaging.sendToBackground DELETE_DRAW_TABS_TO_CONTEXT_SCRIPT")
             PanelMessaging.sendToBackground("DELETE_DRAW_TABS_TO_CONTEXT_SCRIPTS", { tabId: this.state.tabId, tabURL: this.state.tabURL });
             this.setState({ tabStopsPanel: false });
             setTimeout(function () {
                 // console.log("tabStopsPanel1 = ", mythis.state.tabStopsPanel);
             }, 1);
             this.selectElementInElements();
+            console.log("tabStopsHandler DONE");
         }
     
         tabStopsHighlight(index: number, result: any) {

@@ -206,13 +206,13 @@ export async function getComplianceHelper(content, label) : Promise<ICheckerResu
         Config.DEBUG && console.log("getComplianceHelper:Selenium");
         return await getComplianceHelperSelenium(label, parsed, curPol);
     } else if (ACEngineManager.isPuppeteer(parsed)) {
-        Config.DEBUG && console.log("ACHelper.ts:getComplianceHelper:Puppeteer");
+        Config.DEBUG && console.log("getComplianceHelper:Puppeteer");
         return await getComplianceHelperPuppeteer(label, parsed, curPol);
     } else if (ACEngineManager.isPlaywright(parsed)) {
-        Config.DEBUG && console.log("ACHelper.ts:getComplianceHelper:Playwright");
+        Config.DEBUG && console.log("getComplianceHelper:Playwright");
         return await getComplianceHelperPuppeteer(label, parsed, curPol);
     } else {
-        Config.DEBUG && console.log("ACHelper.ts:getComplianceHelper:Local");
+        Config.DEBUG && console.log("getComplianceHelper:Local");
         return await getComplianceHelperLocal(label, parsed, curPol);
     }
 }
@@ -228,7 +228,7 @@ async function getComplianceHelperSelenium(label, parsed, curPol) : Promise<IChe
 try {
 let policies = ${JSON.stringify(Config.policies)};
 
-let checker = new window.ace_ibma.Checker();
+let checker = new window.ace.Checker();
 let customRulesets = ${JSON.stringify(ACEngineManager.customRulesets)};
 customRulesets.forEach((rs) => checker.addRuleset(rs));
 setTimeout(function() {
@@ -253,7 +253,7 @@ cb(e);
 
         let report : Report = await browser.executeAsyncScript(scriptStr);
         report = ACReportManager.setLevels(report);
-        const getPolicies = "return new window.ace_ibma.Checker().rulesetIds;";
+        const getPolicies = "return new window.ace.Checker().rulesetIds;";
         if (curPol != null && !checkPolicy) {
             checkPolicy = true;
             const valPolicies = ACEngineManager.customRulesets.map(rs => rs.id).concat(await browser.executeScript(getPolicies));
@@ -311,14 +311,12 @@ cb(e);
 }
 
 async function getComplianceHelperPuppeteer(label, parsed, curPol) : Promise<ICheckerResult> {
-    try { 
+    try {
         const startScan = Date.now();
         // NOTE: Engine should already be loaded
         const page = parsed;
         let report : Report = await page.evaluate(({ policies, customRulesets }) => {
-            
-            let checker = new (window as any).ace_ibma.Checker();
-            console.log("ACHelper.js:getComplianceHelperPuppeteer=", "checker ", checker);
+            let checker = new (window as any).ace.Checker();
             customRulesets.forEach((rs) => checker.addRuleset(rs));
             return new Promise<Report>((resolve, reject) => {
                 setTimeout(function () {
@@ -333,7 +331,7 @@ async function getComplianceHelperPuppeteer(label, parsed, curPol) : Promise<ICh
         }, { policies: Config.policies, customRulesets: ACEngineManager.customRulesets });
         report = ACReportManager.setLevels(report);
         if (curPol != null && !checkPolicy) {
-            const valPolicies = ACEngineManager.customRulesets.map(rs => rs.id).concat(await page.evaluate("new window.ace_ibma.Checker().rulesetIds"));
+            const valPolicies = ACEngineManager.customRulesets.map(rs => rs.id).concat(await page.evaluate("new window.ace.Checker().rulesetIds"));
             checkPolicy = true;
             areValidPolicy(valPolicies, curPol);
         }
