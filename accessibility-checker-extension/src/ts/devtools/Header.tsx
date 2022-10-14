@@ -293,7 +293,7 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
                         <OverflowMenu 
                             className="rendered-icon svg"
                             style={{backgroundColor: "black", height:"32px", width:"32px"}} 
-                            iconDescription="Open and close report scan options"
+                            iconDescription="Scan options"
                             renderIcon={ChevronDown}
                             ariaLabel="Report menu" 
                             // size="xl"
@@ -393,7 +393,8 @@ export default class Header extends React.Component<IHeaderProps, IHeaderState> 
                         <Button 
                             renderIcon={this.props.showHideTabStops ? View : ViewOff} 
                             disabled={!this.props.counts}
-                            hasIconOnly iconDescription="Keyboard Checker Mode" tooltipPosition="left" 
+                            hasIconOnly iconDescription="Keyboard Checker Mode" tooltipPosition="left"
+                            ariaLabel="Clown" 
                             style={{background:"black", border:"none", verticalAlign:"baseline", minHeight:"28px", 
                             paddingTop:"7px", paddingLeft:"7px", paddingRight:"7px", paddingBottom:"7px", marginLeft: "8px"}}
                             onClick={ async() => {

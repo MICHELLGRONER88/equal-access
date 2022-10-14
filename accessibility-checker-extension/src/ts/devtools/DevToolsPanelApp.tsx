@@ -373,8 +373,6 @@
                             self.selectElementInElements();
                         }
     
-                        
-    
                         // store OPTIONS
                         // console.log("Store OPTIONS");
                         // console.log("archiveId 4 = ",archiveId);
@@ -421,7 +419,7 @@
         }
     
         async startScan() {
-            // console.log("Function: startScan START");
+            console.log("Function: startScan START");
             let tabURL = this.state.tabURL;
             let tabId = this.state.tabId;
     
@@ -454,7 +452,7 @@
                     console.error(err);
                 }
             }
-            // console.log("Function: startScan DONE");
+            console.log("Function: startScan DONE");
         }
     
         // JCH - not used
@@ -467,7 +465,7 @@
             // only accept messages that are for the tab / website that we are currently on             
             if (this.state.tabId !== message.tabId) return;
             
-            // console.log("Function: onReport START");
+            console.log("Function: onReport START");
             try {
                 if( BrowserDetection.isChrome() && !message.tabURL.startsWith("file:")){
                     let blob_url = message.blob_url;
@@ -562,40 +560,42 @@
     
     
                 this.setState({ scanning: false }); // scan done
-                // console.log("SCAN DONE");
+                console.log("SCAN DONE");
     
                 // Cases for storage
                 // Note: if scanStorage false not storing scans, if true storing scans
-                // console.log("storedScans.length = ", this.state.storedScans.length, "   scanStorage = ", this.state.scanStorage);
+                console.log("storedScans.length = ", this.state.storedScans.length, "   scanStorage = ", this.state.scanStorage);
     
                 if (this.state.storedScans.length == 0 && this.state.scanStorage === true) { // NO stored scans and storing scans
-                    // console.log("choice 1");
-                    this.storeScan(); // stores first scan - which is both a current and stored scan
+                    console.log("choice 1");
+                    await this.storeScan(); // stores first scan - which is both a current and stored scan
                 } else if (this.state.storedScans.length == 0 && this.state.scanStorage === false) { // NO stored scans and NOT storing scans
-                    // console.log("choice 2");
-                    this.storeScan(); // stores first scan which is a current scan
+                    console.log("choice 2");
+                    await this.storeScan(); // stores first scan which is a current scan
                 } else if (this.state.storedScans.length == 1 && this.state.scanStorage === true) { // one stored scan and storing scans
-                    // console.log("choice 3");
+                    console.log("choice 3");
                     if (this.state.storedScans[0].actualStoredScan === false) {
                         this.clearStoredScans(false); // clears the current scan (not an actualStoredScan)
                     }
-                    this.storeScan();
+                    await this.storeScan();
                 } else if (this.state.storedScans.length == 1 && this.state.scanStorage === false) { // ONE stored scan and NOT storing scans
-                    // console.log("choice 4");
+                    console.log("choice 4");
                     if (this.state.storedScans[this.state.storedScans.length-1].actualStoredScan === false) {
                         this.state.storedScans.pop(); // clears the current scan (that is not an actualStoredScan)
                     }
-                    this.storeScan(); // add current scan
+                    await this.storeScan(); // add current scan
                 } else if (this.state.storedScans.length >  1 && this.state.scanStorage === true) { // MULTIPLE stored scans and storing scans
-                    // console.log("choice 5");
-                    this.storeScan(); // add new current and stored scan
+                    console.log("choice 5");
+                    await this.storeScan(); // add new current and stored scan
                 } else if (this.state.storedScans.length >  1 && this.state.scanStorage === false) { // MULTIPLE stored scans and NOT storing scans
-                    // console.log("choice 6");
+                    console.log("choice 6");
                     if (this.state.storedScans[this.state.storedScans.length-1].actualStoredScan === false) {
                         this.state.storedScans.pop(); // clears the current scan (that is not an actualStoredScan)
                     }
-                    this.storeScan(); // add new current and stored scan
+                    await this.storeScan(); // add new current and stored scan
                 } 
+
+                console.log("storedScans.length = ", this.state.storedScans.length, "   scanStorage = ", this.state.scanStorage);
                
                 if (this.props.layout === "sub") {
                     if (this.state.firstScan === true && message.origin === this.props.layout) {
@@ -653,14 +653,14 @@
                 console.error(err);
             }
             // console.log("this.state.showHideTabStops = ",this.state.showHideTabStops);
-            // console.log("Function: onReport DONE");
+            console.log("Function: onReport DONE");
             return true;
         }
     
         // START - New multi-scan report functions
     
         async storeScan() {
-            // console.log("storeScan");
+            console.log("Function: storeScan START");
     
             // Data to store for Report
             var xlsx_props = {
@@ -757,6 +757,8 @@
             this.setState(({
                 storedScans: [...this.state.storedScans, currentScan]
             }));
+            
+            console.log("Function: storeScan DONE");
         }
     
         storeScanLabel(event:any,i:number) {

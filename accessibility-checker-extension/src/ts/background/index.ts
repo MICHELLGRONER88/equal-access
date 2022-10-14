@@ -182,6 +182,7 @@
     BackgroundMessaging.addListener("DAP_SCAN_TAB_COMPLETE", async (message: any) => {
         try {
             await BackgroundMessaging.sendToPanel("DAP_SCAN_COMPLETE", message);
+            console.log("BackgroundMessaging sendToPanel DAP_SCAN_COMPLETE");
             if (message.archiveId && message.policyId) {
                 let browser = (navigator.userAgent.match(/\) ([^)]*)$/) || ["", "Unknown"])[1];
                 let totalTime = (message.report != undefined)? message.report.totalTime: message.totalTime;
