@@ -1,0 +1,25 @@
+{
+  "name": "@ibma/aat-boilerplate",
+  "version": "3.0.0",
+  "description": "Example usage of IBM AAT with Jest",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "tsc && node_modules/jest/bin/jest.js test/*.test.js"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./setupAfterEnv.js"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/node": "^15.14.1",
+    "accessibility-checker": "^3.0.1",
+    "jest": "^26.0.1",
+    "puppeteer": "^13.4.0",
+    "typescript": "^4.1.5"
+  }
+}
