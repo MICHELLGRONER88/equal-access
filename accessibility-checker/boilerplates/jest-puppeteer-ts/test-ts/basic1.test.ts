@@ -23,7 +23,7 @@ afterAll(async() => {
 
 // Describe this Suite of testscases, describe is a test Suite and 'it' is a testcase.
 describe("Hello World Basics", () => {
-    for (let idx=0; idx<500; ++idx) {
+    for (let idx=0; idx<50; ++idx) {
         test(`Multithread ${idx}`, async () => {
             let page = await browser.newPage();
             await page.goto("about:blank");
